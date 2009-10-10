@@ -219,7 +219,7 @@ void QvvView::keyPressEvent( QKeyEvent * e )
                            break;
 
       case Qt::Key_Insert       : opt_center = ! opt_center;
-      case Qt::Key_Tab          : slotCenter(); moverel( 0, 0 ); break;
+      case Qt::Key_Tab          : moverel( 0, 0 ); break;
 
       case Qt::Key_PageUp       :
       case Qt::Key_BracketLeft  : if (mw) mw->slotGoPrev(); break;
