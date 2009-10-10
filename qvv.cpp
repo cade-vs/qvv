@@ -5,7 +5,6 @@
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QTextEdit>
-#include <QDir>
 #include <QFile>
 #include <QDataStream>
 #include <QFileDialog>
@@ -28,6 +27,8 @@
 #include <qvv.h>
 
 
+QString extensions_filter( ".JPG.JPEG.PNG.GIF.BMP.XPM." );
+
 
 QvvMainWindow::QvvMainWindow()
     : QMainWindow()
@@ -36,7 +37,7 @@ QvvMainWindow::QvvMainWindow()
     setWindowTitle( "Qt Main Window Demo" );
 
     tree = new QTreeWidget( this );
-    tree->setMinimumSize( 400, 205 );
+    tree->setMinimumSize( 400, 200 );
 
     QTreeWidgetItem *header = new QTreeWidgetItem();
     header->setText( 0, "Type" );
@@ -47,25 +48,36 @@ QvvMainWindow::QvvMainWindow()
     tree->setColumnCount( 3 );
     tree->setHeaderItem( header );
 
+    tree->setColumnWidth( 0,  70 );
+    tree->setColumnWidth( 1, 300 );
+    tree->setColumnWidth( 2,  70 );
+
+
     setCentralWidget( tree );
 
     setupMenuBar();
 
     statusBar()->showMessage( "Status Bar" );
 
-    loadDir( "." );
+    loadDir( QString( "." ) );
 }
 
-void QvvMainWindow::loadDir( const char* path )
+void QvvMainWindow::loadDir( QString path )
 {
+  QString last_path = cdir.absolutePath();
+
   cdir.cd( path );
+
+  QString new_path = cdir.absolutePath();
 
   QStringList filters;
   filters.append( QString( "*" ) );
 
   QFileInfoList info_list = cdir.entryInfoList( filters );
 
+  QTreeWidgetItem *current = NULL;
 
+  tree->clear();
   for( int i = 0; i < info_list.count(); i++ )
     {
     QFileInfo fi = info_list.at( i );
@@ -73,23 +85,39 @@ void QvvMainWindow::loadDir( const char* path )
     if( fi.fileName() == "."  ) continue;
     if( fi.fileName() == ".." ) continue;
 
-    QTreeWidgetItem *item = new QTreeWidgetItem( tree );
-    item->setText( 0, fi.isDir() ? "[DIR]" : "" );
+    QString ext = "." + fi.suffix() + ".";
+    if( ! fi.isDir() && extensions_filter.indexOf( ext.toUpper() ) < 0 ) continue;
+
+    QTreeWidgetItem *item = new QTreeWidgetItem();
+    item->setText( 0, fi.isDir() ? ITEM_TYPE_DIR : "" );
     item->setText( 1, fi.fileName() );
     item->setText( 2, QVariant( fi.size() ).toString() );
     item->setTextAlignment( 2, Qt::AlignRight );
+
+    if( last_path == new_path + "/" + fi.fileName() ) current = item;
+
+    tree->addTopLevelItem( item );
     }
 
-  tree->setCurrentItem( tree->topLevelItem( 0 ) );
+  if( current )
+    tree->setCurrentItem( current );
+  else
+    tree->setCurrentItem( tree->topLevelItem( 0 ) );
 };
 
 void QvvMainWindow::goToDir( int mode )
 {
-
 };
 
-void QvvMainWindow::Enter( QTreeWidgetItem * )
+void QvvMainWindow::Enter( QTreeWidgetItem *item )
 {
+  if( item->text( 0 ) == ITEM_TYPE_DIR )
+    {
+    loadDir( item->text( 1 ) );
+    }
+  else
+    {
+    }
 };
 
 void QvvMainWindow::slotNewWindow()
@@ -99,7 +127,10 @@ void QvvMainWindow::slotNewWindow()
   new_mainwin->show();
 };
 
-
+void QvvMainWindow::slotGoUp()
+{
+  loadDir( ".." );
+};
 
 void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
 {
@@ -115,8 +146,9 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
     {
     switch( e->key() )
       {
-      case Qt::Key_F3    : slotNewWindow();
-                           break;
+      case Qt::Key_F3    : slotNewWindow(); break;
+      case Qt::Key_Left  : slotGoUp(); break;
+      case Qt::Key_Right : Enter( tree->currentItem() ); break;
 
 /*
       case Qt::Key_F1    : closeAll();
@@ -134,8 +166,6 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
       case Qt::Key_BracketLeft  : slotGoPrev(); break;
       case Qt::Key_BracketRight : slotGoNext(); break;
       case Qt::Key_Backspace    :
-      case Qt::Key_Left         : slotGoUp(); break;
-      case Qt::Key_Right        : Enter( vb->currentItem() ); break;
       case Qt::Key_Escape       : closeAll(); break;
       case Qt::Key_Insert       : optCenter = !optCenter; break;
       case Qt::Key_Delete       : slotDelete(); break;
@@ -167,12 +197,14 @@ void QvvMainWindow::setupMenuBar()
 {
     QMenu *menu = menuBar()->addMenu(tr("&File"));
 
-    QAction *action = menu->addAction(tr("Save layout..."));
+    QAction *action;
+/*
+    action = menu->addAction(tr("Save layout..."));
     connect(action, SIGNAL(triggered()), this, SLOT(saveLayout()));
 
     action = menu->addAction(tr("Load layout..."));
     connect(action, SIGNAL(triggered()), this, SLOT(loadLayout()));
-
+*/
     action = menu->addAction(tr("Switch layout direction"));
     connect(action, SIGNAL(triggered()), this, SLOT(switchLayoutDirection()));
 
@@ -207,82 +239,6 @@ void QvvMainWindow::setupMenuBar()
     action->setChecked(dockOptions() & VerticalTabs);
     connect(action, SIGNAL(toggled(bool)), this, SLOT(setDockOptions()));
 */
-}
-
-
-void QvvMainWindow::saveLayout()
-{
-    QString fileName
-        = QFileDialog::getSaveFileName(this, tr("Save layout"));
-    if (fileName.isEmpty())
-        return;
-    QFile file(fileName);
-    if (!file.open(QFile::WriteOnly)) {
-        QString msg = tr("Failed to open %1\n%2")
-                        .arg(fileName)
-                        .arg(file.errorString());
-        QMessageBox::warning(this, tr("Error"), msg);
-        return;
-    }
-
-    QByteArray geo_data = saveGeometry();
-    QByteArray layout_data = saveState();
-
-    bool ok = file.putChar((uchar)geo_data.size());
-    if (ok)
-        ok = file.write(geo_data) == geo_data.size();
-    if (ok)
-        ok = file.write(layout_data) == layout_data.size();
-
-    if (!ok) {
-        QString msg = tr("Error writing to %1\n%2")
-                        .arg(fileName)
-                        .arg(file.errorString());
-        QMessageBox::warning(this, tr("Error"), msg);
-        return;
-    }
-}
-
-void QvvMainWindow::loadLayout()
-{
-    QString fileName
-        = QFileDialog::getOpenFileName(this, tr("Load layout"));
-    if (fileName.isEmpty())
-        return;
-    QFile file(fileName);
-    if (!file.open(QFile::ReadOnly)) {
-        QString msg = tr("Failed to open %1\n%2")
-                        .arg(fileName)
-                        .arg(file.errorString());
-        QMessageBox::warning(this, tr("Error"), msg);
-        return;
-    }
-
-    uchar geo_size;
-    QByteArray geo_data;
-    QByteArray layout_data;
-
-    bool ok = file.getChar((char*)&geo_size);
-    if (ok) {
-        geo_data = file.read(geo_size);
-        ok = geo_data.size() == geo_size;
-    }
-    if (ok) {
-        layout_data = file.readAll();
-        ok = layout_data.size() > 0;
-    }
-
-    if (ok)
-        ok = restoreGeometry(geo_data);
-    if (ok)
-        ok = restoreState(layout_data);
-
-    if (!ok) {
-        QString msg = tr("Error reading %1")
-                        .arg(fileName);
-        QMessageBox::warning(this, tr("Error"), msg);
-        return;
-    }
 }
 
 QAction *addAction(QMenu *menu, const QString &text, QActionGroup *group, QSignalMapper *mapper,

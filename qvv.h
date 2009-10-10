@@ -4,6 +4,10 @@
 
 #include <QMainWindow>
 #include <QTreeWidget>
+#include <QDir>
+#include <QString>
+
+const QString ITEM_TYPE_DIR( "[DIR]" );
 
 class ToolBar;
 QT_FORWARD_DECLARE_CLASS(QMenu)
@@ -23,9 +27,9 @@ class QvvMainWindow : public QMainWindow
  public:
      QvvMainWindow();
 
-     void loadDir( const char* path );
+     void loadDir( QString path );
      void goToDir( int mode );
-     void Enter( QTreeWidgetItem * );
+     void Enter( QTreeWidgetItem *item );
 
  protected:
      void showEvent(QShowEvent *event);
@@ -33,10 +37,10 @@ class QvvMainWindow : public QMainWindow
 
  public slots:
      void actionTriggered(QAction *action);
-     void saveLayout();
-     void loadLayout();
      void switchLayoutDirection();
+
      void slotNewWindow();
+     void slotGoUp();
 
  private:
      void setupMenuBar();
