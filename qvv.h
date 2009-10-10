@@ -18,6 +18,8 @@ class QvvMainWindow : public QMainWindow
      QMenu         *menu;
      QSignalMapper *mapper;
 
+     QDir          cdir;
+
  public:
      QvvMainWindow();
 

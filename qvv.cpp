@@ -58,12 +58,12 @@ QvvMainWindow::QvvMainWindow()
 
 void QvvMainWindow::loadDir( const char* path )
 {
-  QDir dir( path );
+  cdir.cd( path );
 
   QStringList filters;
   filters.append( QString( "*" ) );
 
-  QFileInfoList info_list = dir.entryInfoList( filters );
+  QFileInfoList info_list = cdir.entryInfoList( filters );
 
 
   for( int i = 0; i < info_list.count(); i++ )
