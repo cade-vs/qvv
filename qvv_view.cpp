@@ -17,10 +17,13 @@ QvvView::QvvView( QvvMainWindow* a_mw )
   opt_fit    = 1;
   opt_center = 0;
   pm         = NULL;
+
+  move( 0, 0 );
 }
 
 QvvView::~QvvView()
 {
+  if( pm ) delete pm;
   close();
 }
 
@@ -67,8 +70,9 @@ void QvvView::reView( int a_scale )
 {
   // file_name = ":/images/Half_Face_by_uzorpatorica.jpg";
 
-  QImage im
+  QImage im;
   im.load( file_name );
+  if( pm ) delete pm;
   pm = new QPixmap( im.width(), im.height() );
   *pm = QPixmap::fromImage( im );
   loaded = pm->isNull() ? 0 : 1;
@@ -76,11 +80,10 @@ void QvvView::reView( int a_scale )
   setWindowTitle( file_name );
   setWindowIcon( QIcon( *pm ) );
   slotCenter();
-  move( 0, 0 );
   resize( pm->width(), pm->height() );
   setMinimumSize( pm->width(), pm->height() );
   setMaximumSize( pm->width(), pm->height() );
-  show();
+  if( ! isVisible() ) show();
 
   qDebug() << "REVIEW: [" + file_name + "] loaded:"+QVariant( loaded ).toString() << " visible:" << isVisible() << pm->width() << pm->height();
 
