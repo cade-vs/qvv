@@ -22,12 +22,12 @@ class QvvView : public QWidget
     int ypos;
     QvvMainWindow *mw;
 
-    QPixmap pm;
+    QPixmap *pm;
 
     QString file_name;
 
     int opt_fit;
-
+    int opt_center;
     int loaded;
     int scale; // in %'s
 
@@ -53,6 +53,11 @@ class QvvView : public QWidget
 */
     QvvMainWindow* getMainWindow() { return (QvvMainWindow*)parent(); };
 
+    void moverel( int dx, int dy );
+
+  public slots:
+    void slotCenter();
+
   protected:
     void keyPressEvent ( QKeyEvent * e );
     void paintEvent( QPaintEvent * e );
@@ -73,6 +78,8 @@ class QvvMainWindow : public QMainWindow
      QMenu           *menu;
      QSignalMapper   *mapper;
 
+ public:
+
      QList<QvvView*> views;
 
      QDir            cdir;
@@ -80,14 +87,17 @@ class QvvMainWindow : public QMainWindow
      int             opt_thumbs;
      int             opt_dirs_only;
 
- public:
      QvvMainWindow();
 
      void loadDir( QString path );
      void goToDir( int mode );
-     void Enter( QTreeWidgetItem *item );
+     void enter( QTreeWidgetItem *item );
 
      void loadThumbs();
+
+     void goPrevNext( int r );
+
+     void closeView( QvvView *view );
 
  protected:
      void showEvent(QShowEvent *event);
@@ -104,6 +114,9 @@ class QvvMainWindow : public QMainWindow
      void slotHomeDir();
      void slotReloadDir();
      void slotShowDirsOnly();
+
+     void slotGoNext();
+     void slotGoPrev();
 
  private:
      void setupMenuBar();
