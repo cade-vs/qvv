@@ -158,6 +158,17 @@ void QvvMainWindow::loadThumbs()
 
 void QvvMainWindow::goToDir( int mode )
 {
+  QFileDialog::Options options = QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly;
+/*
+  if (!native->isChecked())
+      options |= QFileDialog::DontUseNativeDialog;
+*/
+  QString new_dir = QFileDialog::getExistingDirectory( this,
+                              tr( "Change directory" ),
+                              cdir.absolutePath(),
+                              options );
+  if ( ! new_dir.isEmpty() )
+      loadDir( new_dir );
 };
 
 /*****************************************************************************/
@@ -195,7 +206,24 @@ void QvvMainWindow::slotThumbs()
 {
   opt_thumbs = ! opt_thumbs;
   if( opt_thumbs ) loadThumbs();
+
+  statusBar()->showMessage( opt_thumbs ? tr( "Thumbnails enabled" ) : tr( "Thumbnails disabled" ) );
 };
+
+void QvvMainWindow::slotChangeDir()
+{
+  goToDir( 0 );
+}
+
+void QvvMainWindow::slotHomeDir()
+{
+  loadDir( cdir.homePath() );
+}
+
+void QvvMainWindow::slotReloadDir()
+{
+  loadDir( "." );
+}
 
 /*****************************************************************************/
 
@@ -207,25 +235,29 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
     switch( e->key() )
       {
       case Qt::Key_X   : QApplication::quit(); break;
+      default: QMainWindow::keyPressEvent( e );
       }
     }
   else
     {
     switch( e->key() )
       {
+/*
       case Qt::Key_F3    : slotNewWindow(); break;
+      case Qt::Key_F4    : close();
+                           delete this;
+                           break;
+*/
       case Qt::Key_Left  : slotGoUp(); break;
       case Qt::Key_Right : Enter( tree->currentItem() ); break;
-      case Qt::Key_F6    : slotThumbs(); break;
+
+      //case Qt::Key_F6    : slotThumbs(); break;
+
 
 /*
       case Qt::Key_F1    : closeAll();
                            views.append( new qvvView( this ) );
                            views.first()->load( "*logo*" );
-                           break;
-
-      case Qt::Key_F4    : close();
-                           delete this;
                            break;
 
       case Qt::Key_F5    : loadDir( cdir.absolutePath() ); break;
@@ -237,6 +269,7 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
       case Qt::Key_Insert       : optCenter = !optCenter; break;
       case Qt::Key_Delete       : slotDelete(); break;
 */
+/*
       default:
         if ( e->text().toAscii().at(0) && isalnum(e->text().toAscii().at(0)) )
           find( e->text().toAscii().at(0) );
@@ -248,6 +281,8 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
             case '`' : goToDir( '`' ); break;
             default: QMainWindow::keyPressEvent( e );
             }
+*/
+      default: QMainWindow::keyPressEvent( e );
       }
     }
 
@@ -265,7 +300,9 @@ void QvvMainWindow::actionTriggered(QAction *action)
 
 void QvvMainWindow::setupMenuBar()
 {
-    QMenu *menu = menuBar()->addMenu(tr("&File"));
+    /*--------------------------------------------------------------------*/
+
+    QMenu *menu = menuBar()->addMenu( tr("&File") );
 
     QAction *action;
 /*
@@ -274,15 +311,41 @@ void QvvMainWindow::setupMenuBar()
 
     action = menu->addAction(tr("Load layout..."));
     connect(action, SIGNAL(triggered()), this, SLOT(loadLayout()));
-*/
     action = menu->addAction(tr("Switch layout direction"));
     connect(action, SIGNAL(triggered()), this, SLOT(switchLayoutDirection()));
 
     menu->addSeparator();
+*/
 
-    menu->addAction(tr("&Quit"), this, SLOT(close()));
+    menu->addAction( tr("&Reload directory"), this, SLOT(slotReloadDir()), Qt::Key_F5 );
 
-    menu = menuBar()->addMenu(tr("Main window"));
+    menu->addAction( tr("&Quit"), this, SLOT(close()) );
+
+    /*--------------------------------------------------------------------*/
+
+    menu = menuBar()->addMenu( tr("&View"));
+
+    action = menu->addAction( tr("Enable &thumbnails") );
+    action->setCheckable( true );
+    action->setChecked( opt_thumbs );
+    action->setShortcut( Qt::Key_F6 );
+    connect( action, SIGNAL( toggled(bool) ), this, SLOT(slotThumbs()) );
+
+    /*--------------------------------------------------------------------*/
+
+    menu = menuBar()->addMenu( tr("&Go"));
+
+    menu->addAction( tr("Change &directory"), this, SLOT(slotChangeDir()), '`' );
+    menu->addAction( tr("Go to &home directory"), this, SLOT(slotHomeDir()), '~' );
+
+    /*--------------------------------------------------------------------*/
+
+    menu = menuBar()->addMenu( tr("&Window"));
+
+    menu->addAction( tr("&New window"), this, SLOT(slotNewWindow()), Qt::Key_F3 );
+    menu->addAction( tr("&Close window"), this, SLOT(close()), Qt::Key_F4 );
+
+
 /*
     action = menu->addAction(tr("Animated docks"));
     action->setCheckable(true);
@@ -339,13 +402,10 @@ void QvvMainWindow::switchLayoutDirection()
         qApp->setLayoutDirection(Qt::LeftToRight);
 }
 
-
-
-
 int main(int argc, char **argv)
 {
      QApplication app(argc, argv);
-     QvvMainWindow mainWin;
-     mainWin.show();
+     QvvMainWindow *main_win = new QvvMainWindow();
+     main_win->show();
      return app.exec();
 }

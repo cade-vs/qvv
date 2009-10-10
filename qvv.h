@@ -46,6 +46,9 @@ class QvvMainWindow : public QMainWindow
      void slotNewWindow();
      void slotGoUp();
      void slotThumbs();
+     void slotChangeDir();
+     void slotHomeDir();
+     void slotReloadDir();
 
  private:
      void setupMenuBar();
