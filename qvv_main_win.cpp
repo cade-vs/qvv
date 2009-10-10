@@ -323,6 +323,10 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
       case Qt::Key_Right :
       case Qt::Key_Return: enter( tree->currentItem() ); break;
 
+      case Qt::Key_BracketLeft  : slotGoPrev(); break;
+      case Qt::Key_Space        :
+      case Qt::Key_BracketRight : slotGoNext(); break;
+
       //case Qt::Key_F6    : slotThumbs(); break;
 
 
