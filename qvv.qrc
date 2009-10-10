@@ -1,0 +1,11 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+
+     <file>images/Half_Face_by_uzorpatorica.jpg</file>
+
+     <file>images/go-home.png</file>
+     <file>images/system-log-out.png</file>
+     <file>images/view-refresh.png</file>
+     <file>images/window-new.png</file>
+</qresource>
+</RCC>
