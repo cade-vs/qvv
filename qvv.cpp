@@ -16,7 +16,8 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QLabel>
-#include <QPushButton>
+#include <QDateTime>
+#include <QProgressDialog>
 
 #include <QTreeWidgetItem>
 
@@ -29,12 +30,17 @@
 
 QString extensions_filter( ".JPG.JPEG.PNG.GIF.BMP.XPM." );
 
+/*****************************************************************************/
 
 QvvMainWindow::QvvMainWindow()
     : QMainWindow()
 {
+    opt_thumbs = 0;
+
     setObjectName( "QvvMainWindow" );
-    setWindowTitle( "Qt Main Window Demo" );
+    setWindowTitle( "QVV4" );
+
+    resize( 640, 400 );
 
     tree = new QTreeWidget( this );
     tree->setMinimumSize( 400, 200 );
@@ -43,24 +49,34 @@ QvvMainWindow::QvvMainWindow()
     header->setText( 0, "Type" );
     header->setText( 1, "Name" );
     header->setText( 2, "Size" );
+    header->setText( 3, "Modify Time" );
     header->setTextAlignment( 2, Qt::AlignRight );
 
-    tree->setColumnCount( 3 );
+    tree->setColumnCount( 4 );
     tree->setHeaderItem( header );
 
     tree->setColumnWidth( 0,  70 );
     tree->setColumnWidth( 1, 300 );
-    tree->setColumnWidth( 2,  70 );
+    tree->setColumnWidth( 2,  80 );
+    tree->setColumnWidth( 3, 120 );
+
+    tree->setIconSize( QSize( 64, 64 ) );
+
+    tree->setSortingEnabled( 1 );
+    tree->sortByColumn( 1, Qt::AscendingOrder );
 
 
     setCentralWidget( tree );
 
     setupMenuBar();
 
-    statusBar()->showMessage( "Status Bar" );
+    statusBar()->showMessage( "." );
 
     loadDir( QString( "." ) );
+
 }
+
+/*****************************************************************************/
 
 void QvvMainWindow::loadDir( QString path )
 {
@@ -69,6 +85,8 @@ void QvvMainWindow::loadDir( QString path )
   cdir.cd( path );
 
   QString new_path = cdir.absolutePath();
+
+  setWindowTitle( "QVV4: " + new_path );
 
   QStringList filters;
   filters.append( QString( "*" ) );
@@ -88,13 +106,16 @@ void QvvMainWindow::loadDir( QString path )
     QString ext = "." + fi.suffix() + ".";
     if( ! fi.isDir() && extensions_filter.indexOf( ext.toUpper() ) < 0 ) continue;
 
+    QString file_name = fi.fileName();
+
     QTreeWidgetItem *item = new QTreeWidgetItem();
     item->setText( 0, fi.isDir() ? ITEM_TYPE_DIR : "" );
-    item->setText( 1, fi.fileName() );
+    item->setText( 1, file_name );
     item->setText( 2, QVariant( fi.size() ).toString() );
+    item->setText( 3, fi.lastModified().toString( "yyyy-MM-dd hh:mm:ss" ) );
     item->setTextAlignment( 2, Qt::AlignRight );
 
-    if( last_path == new_path + "/" + fi.fileName() ) current = item;
+    if( last_path == new_path + "/" + file_name ) current = item;
 
     tree->addTopLevelItem( item );
     }
@@ -103,11 +124,43 @@ void QvvMainWindow::loadDir( QString path )
     tree->setCurrentItem( current );
   else
     tree->setCurrentItem( tree->topLevelItem( 0 ) );
+
+  statusBar()->showMessage( QString( "Loaded items: " ) + QVariant( tree->topLevelItemCount() ).toString() );
+
+  if( opt_thumbs )
+    loadThumbs();
 };
+
+/*****************************************************************************/
+
+void QvvMainWindow::loadThumbs()
+{
+  QProgressDialog pd( "Loading thumbnails...", "Cancel", 0, tree->topLevelItemCount() - 1 );
+
+  QString new_path = cdir.absolutePath();
+
+  for( int i = 0; i < tree->topLevelItemCount(); i++ )
+    {
+    pd.setValue( i );
+    if ( pd.wasCanceled() )
+      break;
+
+    QTreeWidgetItem *item = tree->topLevelItem( i );
+    if( item->text( 0 ) == ITEM_TYPE_DIR ) continue;
+
+    QIcon icon( new_path + "/.thumbnails/" + item->text( 1 ) );
+    if( ! icon.isNull() ) item->setIcon( 1, icon );
+    }
+
+}
+
+/*****************************************************************************/
 
 void QvvMainWindow::goToDir( int mode )
 {
 };
+
+/*****************************************************************************/
 
 void QvvMainWindow::Enter( QTreeWidgetItem *item )
 {
@@ -120,6 +173,8 @@ void QvvMainWindow::Enter( QTreeWidgetItem *item )
     }
 };
 
+/*****************************************************************************/
+
 void QvvMainWindow::slotNewWindow()
 {
   QvvMainWindow *new_mainwin = new QvvMainWindow();
@@ -127,10 +182,22 @@ void QvvMainWindow::slotNewWindow()
   new_mainwin->show();
 };
 
+/*****************************************************************************/
+
 void QvvMainWindow::slotGoUp()
 {
   loadDir( ".." );
 };
+
+/*****************************************************************************/
+
+void QvvMainWindow::slotThumbs()
+{
+  opt_thumbs = ! opt_thumbs;
+  if( opt_thumbs ) loadThumbs();
+};
+
+/*****************************************************************************/
 
 void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
 {
@@ -149,6 +216,7 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
       case Qt::Key_F3    : slotNewWindow(); break;
       case Qt::Key_Left  : slotGoUp(); break;
       case Qt::Key_Right : Enter( tree->currentItem() ); break;
+      case Qt::Key_F6    : slotThumbs(); break;
 
 /*
       case Qt::Key_F1    : closeAll();
@@ -161,7 +229,6 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
                            break;
 
       case Qt::Key_F5    : loadDir( cdir.absolutePath() ); break;
-      case Qt::Key_F6    : slotThumbs(); break;
 
       case Qt::Key_BracketLeft  : slotGoPrev(); break;
       case Qt::Key_BracketRight : slotGoNext(); break;
@@ -187,11 +254,14 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
 
 }
 
+/*****************************************************************************/
 
 void QvvMainWindow::actionTriggered(QAction *action)
 {
     qDebug("action '%s' triggered", action->text().toLocal8Bit().data());
 }
+
+/*****************************************************************************/
 
 void QvvMainWindow::setupMenuBar()
 {
@@ -276,7 +346,6 @@ int main(int argc, char **argv)
 {
      QApplication app(argc, argv);
      QvvMainWindow mainWin;
-     mainWin.resize(600, 400);
      mainWin.show();
      return app.exec();
 }

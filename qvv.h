@@ -24,12 +24,16 @@ class QvvMainWindow : public QMainWindow
 
      QDir          cdir;
 
+     int           opt_thumbs;
+
  public:
      QvvMainWindow();
 
      void loadDir( QString path );
      void goToDir( int mode );
      void Enter( QTreeWidgetItem *item );
+
+     void loadThumbs();
 
  protected:
      void showEvent(QShowEvent *event);
@@ -41,6 +45,7 @@ class QvvMainWindow : public QMainWindow
 
      void slotNewWindow();
      void slotGoUp();
+     void slotThumbs();
 
  private:
      void setupMenuBar();
