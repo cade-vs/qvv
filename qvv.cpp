@@ -3,10 +3,19 @@
 
 #include <qvv.h>
 
+QDesktopWidget *Desktop;
+int DeskW;
+int DeskH;
+
 int main(int argc, char **argv)
 {
   QApplication app( argc, argv );
   Q_INIT_RESOURCE(qvv);
+
+  Desktop = QApplication::desktop();
+
+  DeskW  = Desktop->width(); // get width of screen
+  DeskH = Desktop->height(); // get height of screen
 
   QStringList args = app.arguments();
   QStringList imgs;

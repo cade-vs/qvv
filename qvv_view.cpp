@@ -16,6 +16,7 @@ QvvView::QvvView( QvvMainWindow* a_mw )
   rotation   = 0;
   opt_fit    = 1;
   opt_center = 0;
+  scale      = 100;
   pm         = NULL;
 
   move( 0, 0 );
@@ -35,28 +36,13 @@ void QvvView::moverel( int dx, int dy )
 void QvvView::slotCenter()
 {
   if( ! opt_center ) return;
-  // COPYRIGHT :)
-  // taken as is from http://sector.ynet.sk/qt4-tutorial/my-first-qt-gui-application.html
-  QDesktopWidget *desktop = QApplication::desktop();
 
-  int screenWidth, width;
-  int screenHeight, height;
   int x, y;
-  QSize windowSize;
 
-  screenWidth  = desktop->width(); // get width of screen
-  screenHeight = desktop->height(); // get height of screen
-
-  windowSize = size(); // size of our application window
-  width      = windowSize.width();
-  height     = windowSize.height();
-
-  // little computations
-  x = ( screenWidth  - width  ) / 2;
-  y = ( screenHeight - height ) / 2;
+  x = ( DeskW - width()  ) / 2;
+  y = ( DeskH - height() ) / 2;
   y -= 50;
 
-  // move window to desired coordinates
   move( x, y );
 };
 
@@ -70,14 +56,27 @@ void QvvView::reView( int a_scale )
 {
   // file_name = ":/images/Half_Face_by_uzorpatorica.jpg";
 
+  scale = a_scale;
+  if( scale <  0 ) scale = 100;
+  if( scale == 0 ) scale =  20;
+
   QImage im;
   im.load( file_name );
+  int ow = im.width();
+  int oh = im.height();
+
+  if( opt_fit && a_scale < 0 && ( im.width() > DeskW || im.height() > DeskH - 50 ) )
+    {
+    im = im.scaled( QSize( int(DeskW * scale / 100), int(DeskH * scale / 100) - 50 ) , Qt::KeepAspectRatio );
+    scale = int(100*im.width()/ow);
+    }
+
   if( pm ) delete pm;
   pm = new QPixmap( im.width(), im.height() );
   *pm = QPixmap::fromImage( im );
   loaded = pm->isNull() ? 0 : 1;
 
-  setWindowTitle( file_name );
+  setWindowTitle( file_name + " @ " + QVariant(scale).toString() + "% ["+QVariant(pm->width()).toString()+"x"+QVariant(pm->height()).toString()+"]" );
   //setWindowIcon( QIcon( *pm ) );
   slotCenter();
   resize( pm->width(), pm->height() );
@@ -234,6 +233,32 @@ void QvvView::keyPressEvent( QKeyEvent * e )
       case Qt::Key_PageDown     :
       case Qt::Key_BracketRight : if (mw) mw->slotGoNext(); break;
 
+      default:
+              switch( e->text().toAscii().at(0) )
+              {
+              case '+'  : reView( scale + 20 ); break;
+              case '-'  : reView( scale - 20 ); break;
+              case '*'  : opt_fit = 1; reView(  -1 ); break;
+              case '/'  : opt_fit = 0; reView( 100 ); break;
+
+              case '1'  : reView( 100 ); break;
+              case '2'  : reView( 200 ); break;
+              case '3'  : reView( 300 ); break;
+              case '4'  : reView( 400 ); break;
+              case '5'  : reView( 500 ); break;
+
+              /*
+              case '<'  :
+              case ','  : rotation -= 90; reView( scale ); break;
+              case '>'  :
+              case '.'  : rotation += 90; reView( scale ); break;
+              */
+
+              case 'Z'  : reView( -2 );
+              // case 'z'  : setDesktopBackground(); break;
+
+              default   : QWidget::keyPressEvent( e ); break;
+              }
 /*
       case Qt::Key_F3    : slotNewWindow(); break;
       case Qt::Key_Left  : slotGoUp(); break;
@@ -301,40 +326,12 @@ void QvvView::keyPressEvent( QKeyEvent * e )
                                 mw->Enter( mw->vb->currentItem() );
                                 }
                                 break;
-      default:
-              switch( e->text().toAscii().at(0) )
-              {
-              case 13   : if (mw) mw->views.removeOne( this );
-                          close(); delete this; break;
-              case '+'  : reView( scale + 20 ); break;
-              case '-'  : reView( scale - 20 ); break;
-              case '*'  : reView(  -1 ); optFit = 1; break;
-              case '/'  : reView( 100 ); optFit = 0; break;
-
-              case '1'  : reView( 100 ); break;
-              case '2'  : reView( 200 ); break;
-              case '3'  : reView( 300 ); break;
-              case '4'  : reView( 400 ); break;
-              case '5'  : reView( 500 ); break;
-
-        case '<'  :
-        case ','  : rotation -= 90; reView( scale ); break;
-        case '>'  :
-        case '.'  : rotation += 90; reView( scale ); break;
-
-              case 'Z'  : reView( -2 );
-              case 'z'  : setDesktopBackground(); break;
-
-              default:
-                QWidget::keyPressEvent( e );
-              break;
-              }
       break;
       }
 ======================================================
 
-*/
       default: QWidget::keyPressEvent( e );
+*/
       }
     }
 };

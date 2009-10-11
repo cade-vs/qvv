@@ -6,8 +6,13 @@
 #include <QTreeWidget>
 #include <QDir>
 #include <QString>
+#include <QDesktopWidget>
 
 const QString ITEM_TYPE_DIR( "[DIR]" );
+
+extern QDesktopWidget *Desktop;
+extern int DeskW;
+extern int DeskH;
 
 class ToolBar;
 QT_FORWARD_DECLARE_CLASS(QMenu)
