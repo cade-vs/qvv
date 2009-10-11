@@ -78,7 +78,7 @@ void QvvView::reView( int a_scale )
   loaded = pm->isNull() ? 0 : 1;
 
   setWindowTitle( file_name );
-  setWindowIcon( QIcon( *pm ) );
+  //setWindowIcon( QIcon( *pm ) );
   slotCenter();
   resize( pm->width(), pm->height() );
   setMinimumSize( pm->width(), pm->height() );
@@ -216,7 +216,13 @@ void QvvView::keyPressEvent( QKeyEvent * e )
 
       case Qt::Key_Escape:
       case Qt::Key_Return:
-      case Qt::Key_F4    : mw->closeView( this );
+      case Qt::Key_F4    : if( mw )
+                             mw->closeView( this );
+                           else
+                             {
+                             close();
+                             delete( this );
+                             }
                            break;
 
       case Qt::Key_Insert       : opt_center = ! opt_center;

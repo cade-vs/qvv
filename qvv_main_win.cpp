@@ -35,7 +35,7 @@ QvvMainWindow::QvvMainWindow()
     opt_dirs_only = 0;
 
     setObjectName( "QvvMainWindow" );
-    setWindowTitle( "QVV4" );
+    setWindowTitle( "QVV/4" );
 
     setWindowIcon( QIcon( ":/images/Half_Face_by_uzorpatorica.jpg" ) );
 
@@ -70,9 +70,9 @@ QvvMainWindow::QvvMainWindow()
 
     setupMenuBar();
 
-    statusBar()->showMessage( "." );
+    //statusBar()->showMessage( "." );
 
-    loadDir( QString( "." ) );
+    //loadDir( QString( "." ) );
 
 }
 
@@ -86,7 +86,7 @@ void QvvMainWindow::loadDir( QString path )
 
   QString new_path = cdir.absolutePath();
 
-  setWindowTitle( "QVV4: " + new_path );
+  setWindowTitle( "QVV/4: " + new_path );
 
   QStringList filters;
   filters.append( QString( "*" ) );
@@ -214,6 +214,7 @@ void QvvMainWindow::slotNewWindow()
   QvvMainWindow *new_mainwin = new QvvMainWindow();
   new_mainwin->resize(600, 400);
   new_mainwin->show();
+  new_mainwin->loadDir( cdir.absolutePath() );
 };
 
 /*****************************************************************************/
@@ -240,17 +241,23 @@ void QvvMainWindow::goPrevNext( int r )
   QTreeWidgetItem *lwi = tree->currentItem();
 
   int i;
+  int start;
+
   int x = tree->topLevelItemCount();
 
   i = tree->indexOfTopLevelItem( lwi );
+  start = i;
 
-  if( x == 0 or i < 0 ) return; // not found or empty list
+  if( x <= 1 or i < 0 ) return; // not found or empty list
 
   while(4)
     {
+    //qDebug() << "NP1: " << i;
     i += r;
     lwi = NULL;
-    if( i >= x or i < 0 ) break;
+    if( i >= x ) i = 0;
+    if( i <  0 ) i = x - 1;
+    if( i == start ) break;
     lwi = tree->topLevelItem( i );
     if( lwi->text( 0 ) == ITEM_TYPE_DIR ) continue;
     break;
