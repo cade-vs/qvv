@@ -93,6 +93,7 @@ class QvvMainWindow : public QMainWindow
      int             opt_dirs_only;
 
      QvvMainWindow();
+     ~QvvMainWindow();
 
      void loadDir( QString path );
      void goToDir( int mode );

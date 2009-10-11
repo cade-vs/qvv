@@ -76,16 +76,19 @@ void QvvView::reView( int a_scale )
   *pm = QPixmap::fromImage( im );
   loaded = pm->isNull() ? 0 : 1;
 
-  setWindowTitle( file_name + " @ " + QVariant(scale).toString() + "% ["+QVariant(pm->width()).toString()+"x"+QVariant(pm->height()).toString()+"]" );
+  int w = pm->width();
+  int h = pm->height();
+
+  setWindowTitle( file_name + " @ " + QVariant(scale).toString() + "% ["+QVariant(w).toString()+"x"+QVariant(h).toString()+"]" );
   //setWindowIcon( QIcon( *pm ) );
   slotCenter();
-  resize( pm->width(), pm->height() );
-  setMinimumSize( pm->width(), pm->height() );
-  setMaximumSize( pm->width(), pm->height() );
+  resize( w, h );
+  setMinimumSize( w, h );
+  setMaximumSize( w, h );
   if( ! isVisible() ) show();
   update();
 
-  qDebug() << "REVIEW: [" + file_name + "] loaded:"+QVariant( loaded ).toString() << " visible:" << isVisible() << pm->width() << pm->height();
+  //qDebug() << "REVIEW: [" + file_name + "] loaded:"+QVariant( loaded ).toString() << " visible:" << isVisible() << pm->width() << pm->height();
 
 /*
   loaded = 1;

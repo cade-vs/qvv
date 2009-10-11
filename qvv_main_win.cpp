@@ -34,6 +34,8 @@ QvvMainWindow::QvvMainWindow()
     opt_thumbs = 0;
     opt_dirs_only = 0;
 
+    setAttribute( Qt::WA_DeleteOnClose );
+
     setObjectName( "QvvMainWindow" );
     setWindowTitle( "QVV/4" );
 
@@ -74,6 +76,15 @@ QvvMainWindow::QvvMainWindow()
 
     //loadDir( QString( "." ) );
 
+}
+
+QvvMainWindow::~QvvMainWindow()
+{
+  while( views.count() > 0 )
+    {
+    QvvView *v = views.takeFirst();
+    delete v;
+    }
 }
 
 /*****************************************************************************/
@@ -298,9 +309,9 @@ void QvvMainWindow::slotReloadDir()
 void QvvMainWindow::slotShowDirsOnly()
 {
   opt_dirs_only = ! opt_dirs_only;
-  loadThumbs();
+  loadDir( cdir.absolutePath() );
 
-  statusBar()->showMessage( opt_thumbs ? tr( "Show directories only" ) : tr( "Show all directories and files" ) );
+  statusBar()->showMessage( opt_dirs_only ? tr( "Show directories only" ) : tr( "Show all directories and files" ) );
 }
 
 /*****************************************************************************/
