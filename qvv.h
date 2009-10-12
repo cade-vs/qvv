@@ -97,7 +97,6 @@ class QvvMainWindow : public QMainWindow
 
      void loadDir( QString path );
      void goToDir( int mode );
-     void enter( QTreeWidgetItem *item );
 
      void loadThumbs();
 
@@ -110,6 +109,8 @@ class QvvMainWindow : public QMainWindow
      void keyPressEvent(QKeyEvent *event);
 
  public slots:
+     void enter( QTreeWidgetItem *item );
+
      void actionTriggered(QAction *action);
      void switchLayoutDirection();
 

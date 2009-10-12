@@ -65,7 +65,7 @@ void QvvView::reView( int a_scale )
   int ow = im.width();
   int oh = im.height();
 
-  if( opt_fit && a_scale < 0 && ( im.width() > DeskW || im.height() > DeskH - 50 ) )
+  if( ( opt_fit && a_scale < 0 && ( im.width() > DeskW || im.height() > DeskH - 50 ) ) || a_scale == -2 )
     {
     im = im.scaled( QSize( int(DeskW * scale / 100), int(DeskH * scale / 100) - 50 ) , Qt::KeepAspectRatio );
     scale = int(100*im.width()/ow);

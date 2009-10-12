@@ -76,6 +76,7 @@ QvvMainWindow::QvvMainWindow()
 
     //loadDir( QString( "." ) );
 
+    connect( tree, SIGNAL(itemActivated(QListWidgetItem *)), this, SLOT(enter(QListWidgetItem *)));
 }
 
 QvvMainWindow::~QvvMainWindow()
