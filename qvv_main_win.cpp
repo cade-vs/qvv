@@ -156,6 +156,9 @@ void QvvMainWindow::loadDir( QString path )
 
   setWindowTitle( "QVV/4: " + new_path );
 
+  QString save_item_name;
+  if( tree->topLevelItemCount() > 0 ) save_item_name = tree->currentItem()->text( 1 );
+
   QStringList filters;
   filters.append( QString( "*" ) );
 
@@ -193,7 +196,11 @@ void QvvMainWindow::loadDir( QString path )
   if( current )
     tree->setCurrentItem( current );
   else
+    {
     tree->setCurrentItem( tree->topLevelItem( 0 ) );
+    if( save_item_name != "" )
+      tree->findNext( save_item_name );
+    }
 
   statusBar()->showMessage( QString( "Loaded items: " ) + QVariant( tree->topLevelItemCount() ).toString() );
 
@@ -375,7 +382,7 @@ void QvvMainWindow::slotHomeDir()
 
 void QvvMainWindow::slotReloadDir()
 {
-  loadDir( "." );
+  loadDir( cdir.absolutePath() );
 }
 
 void QvvMainWindow::slotShowDirsOnly()
