@@ -31,7 +31,7 @@ QString extensions_filter( ".JPG.JPEG.PNG.GIF.BMP.XPM." );
 QvvMainWindow::QvvMainWindow()
     : QMainWindow()
 {
-    opt_thumbs = 0;
+    opt_thumbs    = 0;
     opt_dirs_only = 0;
 
     setAttribute( Qt::WA_DeleteOnClose );
@@ -76,7 +76,7 @@ QvvMainWindow::QvvMainWindow()
 
     //loadDir( QString( "." ) );
 
-    connect( tree, SIGNAL(itemActivated(QListWidgetItem *)), this, SLOT(enter(QListWidgetItem *)));
+    connect( tree, SIGNAL(itemActivated(QTreeWidgetItem *, int)), this, SLOT(slotItemActivated(QTreeWidgetItem *, int)));
 }
 
 QvvMainWindow::~QvvMainWindow()
@@ -162,8 +162,12 @@ void QvvMainWindow::loadThumbs()
     QTreeWidgetItem *item = tree->topLevelItem( i );
     if( item->text( 0 ) == ITEM_TYPE_DIR ) continue;
 
-    QIcon icon( new_path + "/.thumbnails/" + item->text( 1 ) );
-    if( ! icon.isNull() ) item->setIcon( 1, icon );
+    QString icon_fn = new_path + "/.thumbnails/" + item->text( 1 ) + ".png";
+    if( QFile::exists( icon_fn ) )
+      {
+      QIcon icon( icon_fn );
+      if( ! icon.isNull() ) item->setIcon( 1, icon );
+      }
     }
 
 }
@@ -217,6 +221,13 @@ void QvvMainWindow::closeView( QvvView *view )
   view->close();
   views.removeOne( view );
   delete view;
+};
+
+/*****************************************************************************/
+
+void QvvMainWindow::slotItemActivated( QTreeWidgetItem *item, int column )
+{
+  enter( item );
 };
 
 /*****************************************************************************/
@@ -438,7 +449,11 @@ void QvvMainWindow::setupMenuBar()
 
     menu = menuBar()->addMenu( tr("&Go"));
 
+    action = menu->addAction( tr("Go to &parent directory"), this, SLOT(slotGoUp()), '~' );
+    action->setIcon( QIcon( ":/images/go-up.png" ) );
+
     menu->addAction( tr("Change &directory"), this, SLOT(slotChangeDir()), '`' );
+
     action = menu->addAction( tr("Go to &home directory"), this, SLOT(slotHomeDir()), '~' );
     action->setIcon( QIcon( ":/images/go-home.png" ) );
 

@@ -114,6 +114,8 @@ class QvvMainWindow : public QMainWindow
      void actionTriggered(QAction *action);
      void switchLayoutDirection();
 
+     void slotItemActivated( QTreeWidgetItem *item, int column );
+
      void slotNewWindow();
      void slotGoUp();
      void slotThumbs();
