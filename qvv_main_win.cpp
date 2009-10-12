@@ -28,6 +28,62 @@ QString extensions_filter( ".JPG.JPEG.PNG.GIF.BMP.XPM." );
 
 /*****************************************************************************/
 
+QvvTreeWidget::QvvTreeWidget( QWidget *parent )
+     : QTreeWidget( parent )
+{
+}
+
+void QvvTreeWidget::findNext( QString str )
+{
+  QTreeWidgetItem *lwi = currentItem();
+
+  int i;
+  int start;
+
+  int x = topLevelItemCount();
+
+  i = indexOfTopLevelItem( lwi );
+  start = i;
+
+  if( x <= 1 or i < 0 ) return; // not found or empty list
+
+  while(4)
+    {
+    i++;
+    if( i >= x ) i = 0;
+    if( i == start ) break;
+    lwi = topLevelItem( i );
+    if( lwi->text( 1 ).toUpper().indexOf( str.toUpper() ) == 0 ) break;
+    lwi = NULL;
+    }
+  if( lwi )
+    {
+    setCurrentItem( lwi );
+    }
+}
+
+
+void QvvTreeWidget::keyPressEvent ( QKeyEvent * e )
+{
+
+  e->ignore();
+  int a = e->text().toAscii().at(0);
+  int m = e->modifiers();
+
+  if( ( m == Qt::ShiftModifier || m == Qt::NoModifier ) && a >= '!' && a <= 'z' )
+    {
+    findNext( QString( QVariant( a ).toChar() ) );
+    }
+  else
+    {
+    QTreeWidget::keyPressEvent( e );
+    }
+
+}
+
+
+/*****************************************************************************/
+
 QvvMainWindow::QvvMainWindow()
     : QMainWindow()
 {
@@ -43,7 +99,7 @@ QvvMainWindow::QvvMainWindow()
 
     resize( 640, 400 );
 
-    tree = new QTreeWidget( this );
+    tree = new QvvTreeWidget( this );
     tree->setMinimumSize( 400, 200 );
 
     QTreeWidgetItem *header = new QTreeWidgetItem();
@@ -271,25 +327,29 @@ void QvvMainWindow::goPrevNext( int r )
   i = tree->indexOfTopLevelItem( lwi );
   start = i;
 
+  //qDebug() << "CurrentItemStart: " << i << " " << lwi->text( 0 ) << " " << lwi->text( 1 );
+
   if( x <= 1 or i < 0 ) return; // not found or empty list
 
   while(4)
     {
-    //qDebug() << "NP1: " << i;
     i += r;
     lwi = NULL;
     if( i >= x ) i = 0;
     if( i <  0 ) i = x - 1;
     if( i == start ) break;
     lwi = tree->topLevelItem( i );
+    //qDebug() << "Searching: " << i << " " << lwi->text( 0 ) << " " << lwi->text( 1 );
     if( lwi->text( 0 ) == ITEM_TYPE_DIR ) continue;
     break;
     }
-  qDebug() << i;
   if( lwi )
     {
+    //qDebug() << "CurrentItemFound: " << i << " " << lwi->text( 0 ) << " " << lwi->text( 1 );
     tree->setCurrentItem( lwi );
     enter( lwi );
+    //lwi = tree->currentItem();
+    //qDebug() << "CurrentItemFound: " << i << " " << lwi->text( 0 ) << " " << lwi->text( 1 );
     }
 };
 
@@ -331,12 +391,15 @@ void QvvMainWindow::slotShowDirsOnly()
 void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
 {
 
+  e->accept();
   if( e->modifiers() & Qt::ALT )
     {
     switch( e->key() )
       {
       case Qt::Key_X   : QApplication::quit(); break;
-      default: QMainWindow::keyPressEvent( e );
+      default:
+               e->ignore();
+               QMainWindow::keyPressEvent( e );
       }
     }
   else
@@ -388,11 +451,20 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
             default: QMainWindow::keyPressEvent( e );
             }
 */
-      default: QMainWindow::keyPressEvent( e );
+      default:
+              switch( e->text().toAscii().at(0) )
+              {
+              case '[' : slotGoPrev(); break;
+              case ']' : slotGoNext(); break;
+              case '~' : slotGoUp();   break;
+              case '`' : slotChangeDir();   break;
+
+              default:
+                       e->ignore();
+                       QMainWindow::keyPressEvent( e );
+              }
       }
     }
-
-
 }
 
 /*****************************************************************************/
@@ -426,7 +498,7 @@ void QvvMainWindow::setupMenuBar()
     action = menu->addAction( tr("&Reload directory"), this, SLOT(slotReloadDir()), Qt::Key_F5 );
     action->setIcon( QIcon( ":/images/view-refresh.png" ) );
 
-    action = menu->addAction( tr("&Quit"), this, SLOT(close()) );
+    action = menu->addAction( tr("&Quit"), this, SLOT(close()), Qt::AltModifier + Qt::Key_X );
     action->setIcon( QIcon( ":/images/system-log-out.png" ) );
 
     /*--------------------------------------------------------------------*/
@@ -439,22 +511,22 @@ void QvvMainWindow::setupMenuBar()
     action->setShortcut( Qt::Key_F6 );
     connect( action, SIGNAL( toggled(bool) ), this, SLOT(slotThumbs()) );
 
-    action = menu->addAction( tr("Show &directories only") );
+    action = menu->addAction( tr("Show d&irectories only") );
     action->setCheckable( true );
     action->setChecked( opt_dirs_only );
-    //action->setShortcut( Qt::Key_F6 );
+    action->setShortcut( Qt::AltModifier + Qt::Key_I );
     connect( action, SIGNAL( toggled(bool) ), this, SLOT(slotShowDirsOnly()) );
 
     /*--------------------------------------------------------------------*/
 
     menu = menuBar()->addMenu( tr("&Go"));
 
-    action = menu->addAction( tr("Go to &parent directory"), this, SLOT(slotGoUp()), '~' );
+    action = menu->addAction( tr("Go to p&arent directory"), this, SLOT(slotGoUp()), Qt::AltModifier + Qt::Key_A );
     action->setIcon( QIcon( ":/images/go-up.png" ) );
 
-    menu->addAction( tr("Change &directory"), this, SLOT(slotChangeDir()), '`' );
+    menu->addAction( tr("Change &directory"), this, SLOT(slotChangeDir()), Qt::AltModifier + Qt::Key_D );
 
-    action = menu->addAction( tr("Go to &home directory"), this, SLOT(slotHomeDir()), '~' );
+    action = menu->addAction( tr("Go to &home directory"), this, SLOT(slotHomeDir()), Qt::AltModifier + Qt::Key_Home );
     action->setIcon( QIcon( ":/images/go-home.png" ) );
 
     /*--------------------------------------------------------------------*/

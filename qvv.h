@@ -74,12 +74,26 @@ class QvvView : public QWidget
 */
 };
 
+class QvvTreeWidget : public QTreeWidget
+{
+
+     Q_OBJECT
+
+ public:
+     QvvTreeWidget( QWidget *parent );
+
+     void findNext( QString str );
+
+ protected:
+     void keyPressEvent(QKeyEvent *event);
+};
+
 class QvvMainWindow : public QMainWindow
 {
 
      Q_OBJECT
 
-     QTreeWidget     *tree;
+     QvvTreeWidget   *tree;
      QMenu           *menu;
      QSignalMapper   *mapper;
 
