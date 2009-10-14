@@ -87,8 +87,13 @@ void QvvTreeWidget::keyPressEvent ( QKeyEvent * e )
 QvvMainWindow::QvvMainWindow()
     : QMainWindow()
 {
+    rand_seeded = 0;
+
     opt_thumbs    = 0;
     opt_dirs_only = 0;
+
+    last_sort_col = 1;
+    last_sort_ord = Qt::AscendingOrder;
 
     setAttribute( Qt::WA_DeleteOnClose );
 
@@ -206,6 +211,9 @@ void QvvMainWindow::loadDir( QString path )
 
   if( opt_thumbs )
     loadThumbs();
+
+  tree->resizeColumnToContents( 2 );
+  tree->resizeColumnToContents( 3 );
 };
 
 /*****************************************************************************/
@@ -393,6 +401,46 @@ void QvvMainWindow::slotShowDirsOnly()
   statusBar()->showMessage( opt_dirs_only ? tr( "Show directories only" ) : tr( "Show all directories and files" ) );
 }
 
+void QvvMainWindow::sortColumn( int n )
+{
+  if( last_sort_col == n )
+    {
+    last_sort_ord = last_sort_ord == Qt::AscendingOrder ? Qt::DescendingOrder : Qt::AscendingOrder;
+    }
+  else
+    {
+    last_sort_ord = Qt::AscendingOrder;
+    }
+  last_sort_col = n;
+  tree->sortByColumn( last_sort_col, last_sort_ord );
+};
+
+void QvvMainWindow::slotSortColumn1()
+{
+  sortColumn( 1 );
+};
+
+void QvvMainWindow::slotSortColumn3()
+{
+  sortColumn( 3 );
+};
+
+void QvvMainWindow::slotRandomItem()
+{
+  int x = tree->topLevelItemCount();
+  if( rand_seeded == 0 ) qsrand( QDateTime::currentDateTime().toTime_t() );
+  rand_seeded = 1;
+  int r = qrand();
+
+  int n = int( r % x );
+
+  tree->setCurrentItem( tree->topLevelItem( n ) );
+  slotGoNext();
+
+
+  qDebug() << x << ", r=" << r << " n=" << n;
+};
+
 /*****************************************************************************/
 
 void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
@@ -463,7 +511,7 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
               {
               case '[' : slotGoPrev(); break;
               case ']' : slotGoNext(); break;
-              case '~' : slotGoUp();   break;
+              case '~' : slotHomeDir();   break;
               case '`' : slotChangeDir();   break;
 
               default:
@@ -524,6 +572,12 @@ void QvvMainWindow::setupMenuBar()
     action->setShortcut( Qt::AltModifier + Qt::Key_I );
     connect( action, SIGNAL( toggled(bool) ), this, SLOT(slotShowDirsOnly()) );
 
+    menu->addSeparator();
+
+    action = menu->addAction( tr("Sort by &Name"),        this, SLOT(slotSortColumn1()), Qt::AltModifier + Qt::Key_N );
+    action = menu->addAction( tr("Sort by &Modify Time"), this, SLOT(slotSortColumn3()), Qt::AltModifier + Qt::Key_M );
+
+
     /*--------------------------------------------------------------------*/
 
     menu = menuBar()->addMenu( tr("&Go"));
@@ -535,6 +589,10 @@ void QvvMainWindow::setupMenuBar()
 
     action = menu->addAction( tr("Go to &home directory"), this, SLOT(slotHomeDir()), Qt::AltModifier + Qt::Key_Home );
     action->setIcon( QIcon( ":/images/go-home.png" ) );
+
+    menu->addSeparator();
+
+    action = menu->addAction( tr("Go to &Random image"),        this, SLOT(slotRandomItem()), Qt::Key_Asterisk );
 
     /*--------------------------------------------------------------------*/
 

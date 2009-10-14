@@ -97,11 +97,16 @@ class QvvMainWindow : public QMainWindow
      QMenu           *menu;
      QSignalMapper   *mapper;
 
+     int rand_seeded;
+
  public:
 
      QList<QvvView*> views;
 
      QDir            cdir;
+
+     int             last_sort_col;
+     Qt::SortOrder   last_sort_ord;
 
      int             opt_thumbs;
      int             opt_dirs_only;
@@ -117,6 +122,8 @@ class QvvMainWindow : public QMainWindow
      void goPrevNext( int r );
 
      void closeView( QvvView *view );
+
+     void sortColumn( int n );
 
  protected:
      void showEvent(QShowEvent *event);
@@ -140,6 +147,11 @@ class QvvMainWindow : public QMainWindow
 
      void slotGoNext();
      void slotGoPrev();
+
+     void slotSortColumn1();
+     void slotSortColumn3();
+
+     void slotRandomItem();
 
  private:
      void setupMenuBar();

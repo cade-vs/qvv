@@ -236,6 +236,8 @@ void QvvView::keyPressEvent( QKeyEvent * e )
       case Qt::Key_PageDown     :
       case Qt::Key_BracketRight : if (mw) mw->slotGoNext(); break;
 
+      case Qt::Key_Asterisk     : if (mw) mw->slotRandomItem(); break;
+
       default:
               switch( e->text().toAscii().at(0) )
               {
