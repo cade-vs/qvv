@@ -69,7 +69,9 @@ int main(int argc, char **argv)
 
     QvvView *view = new QvvView( main_win );
     main_win->views.append( view );
-    view->load( ":/images/Half_Face_by_uzorpatorica.jpg" );
+    //view->load( ":/images/Half_Face_by_uzorpatorica.jpg" );
+    view->load( ":/images/Look_To_The_Sun_by_K3win_sm.png" );
+
     }
 
   return app.exec();
