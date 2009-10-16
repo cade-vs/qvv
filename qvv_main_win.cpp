@@ -103,7 +103,8 @@ QvvMainWindow::QvvMainWindow()
     setObjectName( "QvvMainWindow" );
     setWindowTitle( "QVV/4" );
 
-    setWindowIcon( QIcon( ":/images/Half_Face_by_uzorpatorica.jpg" ) );
+    // crashes ICEWM :(
+    // setWindowIcon( QIcon( ":/images/Half_Face_by_uzorpatorica.jpg" ) );
 
     resize( 640, 400 );
 
