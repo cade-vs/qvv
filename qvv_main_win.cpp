@@ -1,21 +1,14 @@
 
 #include <QApplication>
 #include <QAction>
-//#include <QLayout>
 #include <QMenu>
 #include <QMenuBar>
 #include <QStatusBar>
-//#include <QTextEdit>
 #include <QFile>
 #include <QDataStream>
 #include <QFileDialog>
-//#include <QMessageBox>
-//#include <QSignalMapper>
 #include <QPainter>
 #include <QMouseEvent>
-//#include <QLineEdit>
-//#include <QComboBox>
-//#include <QLabel>
 #include <QDateTime>
 #include <QProgressDialog>
 
@@ -26,6 +19,7 @@
 #include "qvv.h"
 #include "qvv_view.h"
 #include "qvv_main_win.h"
+#include "qvv_help.h"
 
 QString extensions_filter( ".JPG.JPEG.PNG.GIF.BMP.XPM." );
 
@@ -70,7 +64,7 @@ void QvvTreeWidget::keyPressEvent ( QKeyEvent * e )
 {
 
   e->ignore();
-  int a = e->text().toAscii().at(0);
+  int a = e->text() == "" ? 0 : e->text().toAscii().at(0);
   int m = e->modifiers();
 
   if( ( m == Qt::ShiftModifier || m == Qt::NoModifier ) && a >= '!' && a <= 'z' )
@@ -457,10 +451,7 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
     {
     switch( e->key() )
       {
-      case Qt::Key_X   : QApplication::quit(); break;
-      default:
-               e->ignore();
-               QMainWindow::keyPressEvent( e );
+      default: e->ignore(); QMainWindow::keyPressEvent( e ); break;
       }
     }
   else
@@ -481,9 +472,6 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
       case Qt::Key_BracketLeft  : slotGoPrev(); break;
       case Qt::Key_Space        :
       case Qt::Key_BracketRight : slotGoNext(); break;
-
-      //case Qt::Key_F6    : slotThumbs(); break;
-
 
 /*
       case Qt::Key_F1    : closeAll();
@@ -514,6 +502,9 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
             }
 */
       default:
+            if( e->text() == "" )
+              QWidget::keyPressEvent( e );
+            else
               switch( e->text().toAscii().at(0) )
               {
               case '[' : slotGoPrev(); break;
@@ -521,9 +512,7 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
               case '~' : slotHomeDir();   break;
               case '`' : slotChangeDir();   break;
 
-              default:
-                       e->ignore();
-                       QMainWindow::keyPressEvent( e );
+              default: e->ignore(); QMainWindow::keyPressEvent( e ); break;
               }
       }
     }

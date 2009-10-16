@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'qvv_view.h'
 **
-** Created: Fri Oct 16 15:47:07 2009
+** Created: Fri Oct 16 20:22:15 2009
 **      by: The Qt Meta Object Compiler version 61 (Qt 4.5.1)
 **
 ** WARNING! All changes made in this file will be lost!

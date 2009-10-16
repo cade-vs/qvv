@@ -12,8 +12,4 @@ extern QDesktopWidget *Desktop;
 extern int DeskW;
 extern int DeskH;
 
-extern QTextBrowser *help_browser;
-
-void display_help();
-
 #endif

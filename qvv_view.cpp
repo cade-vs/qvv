@@ -9,6 +9,7 @@
 #include "qvv.h"
 #include "qvv_view.h"
 #include "qvv_main_win.h"
+#include "qvv_help.h"
 
 QvvView::QvvView( QvvMainWindow* a_mw )
 {
@@ -221,10 +222,7 @@ void QvvView::keyPressEvent( QKeyEvent * e )
     {
     switch( e->key() )
       {
-/*
-      case Qt::Key_X   : QApplication::quit(); break;
-*/
-      default: QWidget::keyPressEvent( e );
+      default: QWidget::keyPressEvent( e ); break;
       }
     }
   else
@@ -263,6 +261,9 @@ void QvvView::keyPressEvent( QKeyEvent * e )
       case Qt::Key_Asterisk     : if (getMainWindow(file_name)) mw->slotRandomItem(); break;
 
       default:
+            if( e->text() == "" )
+              QWidget::keyPressEvent( e );
+            else
               switch( e->text().toAscii().at(0) )
               {
               case '+'  : reView( scale + 20 ); break;

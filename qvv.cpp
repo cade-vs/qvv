@@ -1,31 +1,14 @@
 
 #include <QApplication>
-#include <QResource>
 
 #include "qvv.h"
 #include "qvv_view.h"
 #include "qvv_main_win.h"
+#include "qvv_help.h"
 
 QDesktopWidget *Desktop;
 int DeskW;
 int DeskH;
-
-QTextBrowser *help_browser;
-
-void display_help()
-{
-  if( help_browser == NULL )
-    help_browser = new QTextBrowser;
-  help_browser->setHtml( QString( QVariant( (const char*)(QResource( ":/qvv_help.html" ).data()) ).toString() ) );
-
-  help_browser->setObjectName( "QvvHelpWindow" );
-  help_browser->setWindowTitle( "QVV/4 Help" );
-
-  help_browser->resize( 640, 400 );
-  help_browser->move( 100, 100 );
-
-  help_browser->show();
-};
 
 int main(int argc, char **argv)
 {
@@ -36,7 +19,7 @@ int main(int argc, char **argv)
 
   Desktop = QApplication::desktop();
 
-  DeskW  = Desktop->width(); // get width of screen
+  DeskW = Desktop->width();  // get width of screen
   DeskH = Desktop->height(); // get height of screen
 
   QStringList args = app.arguments();
