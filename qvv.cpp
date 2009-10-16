@@ -1,5 +1,6 @@
 
 #include <QApplication>
+#include <QResource>
 
 #include <qvv.h>
 
@@ -7,10 +8,29 @@ QDesktopWidget *Desktop;
 int DeskW;
 int DeskH;
 
+QTextBrowser *help_browser;
+
+void display_help()
+{
+  if( help_browser == NULL )
+    help_browser = new QTextBrowser;
+  help_browser->setHtml( QString( QVariant( (const char*)(QResource( ":/qvv_help.html" ).data()) ).toString() ) );
+
+  help_browser->setObjectName( "QvvHelpWindow" );
+  help_browser->setWindowTitle( "QVV/4 Help" );
+
+  help_browser->resize( 640, 400 );
+  help_browser->move( 100, 100 );
+
+  help_browser->show();
+};
+
 int main(int argc, char **argv)
 {
   QApplication app( argc, argv );
   Q_INIT_RESOURCE(qvv);
+
+  help_browser = NULL;
 
   Desktop = QApplication::desktop();
 

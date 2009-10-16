@@ -436,9 +436,11 @@ void QvvMainWindow::slotRandomItem()
 
   tree->setCurrentItem( tree->topLevelItem( n ) );
   slotGoNext();
+};
 
-
-  qDebug() << x << ", r=" << r << " n=" << n;
+void QvvMainWindow::slotHelp()
+{
+  display_help();
 };
 
 /*****************************************************************************/
@@ -461,6 +463,7 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
     {
     switch( e->key() )
       {
+      case Qt::Key_F1: slotHelp(); break;
 /*
       case Qt::Key_F3    : slotNewWindow(); break;
       case Qt::Key_F4    : close();
@@ -603,6 +606,12 @@ void QvvMainWindow::setupMenuBar()
 
     menu->addAction( tr("&Close window"), this, SLOT(close()), Qt::Key_F4 );
 
+    /*--------------------------------------------------------------------*/
+
+    menu = menuBar()->addMenu( tr("&Help") );
+
+    action = menu->addAction( tr("&Contents"), this, SLOT(slotHelp()), Qt::Key_F1 );
+    //action = menu->addAction( tr("&About"),  this, SLOT(slotAbout()), Qt::AltModifier + Qt::Key_M );
 
 /*
     action = menu->addAction(tr("Animated docks"));

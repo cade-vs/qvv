@@ -7,12 +7,17 @@
 #include <QDir>
 #include <QString>
 #include <QDesktopWidget>
+#include <QTextBrowser>
 
 const QString ITEM_TYPE_DIR( "[DIR]" );
 
 extern QDesktopWidget *Desktop;
 extern int DeskW;
 extern int DeskH;
+
+extern QTextBrowser *help_browser;
+
+void display_help();
 
 class ToolBar;
 QT_FORWARD_DECLARE_CLASS(QMenu)
@@ -56,12 +61,14 @@ class QvvView : public QWidget
     void statusMsg( const char* msg );
 
 */
-    QvvMainWindow* getMainWindow() { return (QvvMainWindow*)parent(); };
+    QvvMainWindow* getMainWindow( QString fn );
 
     void moverel( int dx, int dy );
 
   public slots:
     void slotCenter();
+
+    void slotHelp();
 
   protected:
     void keyPressEvent ( QKeyEvent * e );
@@ -93,13 +100,14 @@ class QvvMainWindow : public QMainWindow
 
      Q_OBJECT
 
-     QvvTreeWidget   *tree;
      QMenu           *menu;
      QSignalMapper   *mapper;
 
      int rand_seeded;
 
  public:
+
+     QvvTreeWidget   *tree;
 
      QList<QvvView*> views;
 
@@ -152,6 +160,8 @@ class QvvMainWindow : public QMainWindow
      void slotSortColumn3();
 
      void slotRandomItem();
+
+    void slotHelp();
 
  private:
      void setupMenuBar();

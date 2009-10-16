@@ -8,5 +8,8 @@
      <file>images/system-log-out.png</file>
      <file>images/view-refresh.png</file>
      <file>images/window-new.png</file>
+
+     <file>qvv_help.html</file>
+
 </qresource>
 </RCC>

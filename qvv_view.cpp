@@ -56,6 +56,8 @@ void QvvView::reView( int a_scale )
 {
   // file_name = ":/images/Half_Face_by_uzorpatorica.jpg";
 
+  opt_fit = a_scale < 0 ? 1 : 0;
+
   scale = a_scale;
   if( scale <  0 ) scale = 100;
   if( scale == 0 ) scale =  20;
@@ -186,6 +188,24 @@ void QvvView::reView( int a_scale )
 */
 };
 
+QvvMainWindow* QvvView::getMainWindow( QString fn )
+{
+  if( mw )
+    return mw;
+  else
+    {
+    if( fn == "" ) return NULL;
+
+    mw = new QvvMainWindow();
+    QFileInfo fi( fn );
+    mw->loadDir( fi.absolutePath() );
+    mw->tree->findNext( fi.fileName() );
+    mw->views.append( this );
+    return mw;
+    }
+};
+
+
 void QvvView::paintEvent( QPaintEvent * pe )
 {
   if( ! loaded ) return;
@@ -209,6 +229,8 @@ void QvvView::keyPressEvent( QKeyEvent * e )
     {
     switch( e->key() )
       {
+      case Qt::Key_F1: slotHelp(); break;
+
       case Qt::Key_Home  : move( 0, 0 ); break;
 
       case Qt::Key_Left         : moverel( -16, 0 ); break;
@@ -231,21 +253,21 @@ void QvvView::keyPressEvent( QKeyEvent * e )
       case Qt::Key_Tab          : slotCenter(); moverel( 0, 0 ); break;
 
       case Qt::Key_PageUp       :
-      case Qt::Key_BracketLeft  : if (mw) mw->slotGoPrev(); break;
+      case Qt::Key_BracketLeft  : if (getMainWindow(file_name)) mw->slotGoPrev(); break;
       case Qt::Key_Space        :
       case Qt::Key_PageDown     :
-      case Qt::Key_BracketRight : if (mw) mw->slotGoNext(); break;
+      case Qt::Key_BracketRight : if (getMainWindow(file_name)) mw->slotGoNext(); break;
 
-      case Qt::Key_Asterisk     : if (mw) mw->slotRandomItem(); break;
+      case Qt::Key_Asterisk     : if (getMainWindow(file_name)) mw->slotRandomItem(); break;
 
       default:
               switch( e->text().toAscii().at(0) )
               {
               case '+'  : reView( scale + 20 ); break;
               case '-'  : reView( scale - 20 ); break;
-              case '*'  : opt_fit = 1; reView(  -1 ); break;
-              case '/'  : opt_fit = 0; reView( 100 ); break;
+              //case '/'  : opt_fit = 0; reView( 100 ); break;
 
+              case '0'  : opt_fit = 1; reView(  -1 ); break;
               case '1'  : reView( 100 ); break;
               case '2'  : reView( 200 ); break;
               case '3'  : reView( 300 ); break;
@@ -339,4 +361,9 @@ void QvvView::keyPressEvent( QKeyEvent * e )
 */
       }
     }
+};
+
+void QvvView::slotHelp()
+{
+  display_help();
 };
