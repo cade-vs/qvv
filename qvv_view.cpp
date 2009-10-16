@@ -6,7 +6,9 @@
 
 #include <qdebug.h>
 
-#include <qvv.h>
+#include "qvv.h"
+#include "qvv_view.h"
+#include "qvv_main_win.h"
 
 QvvView::QvvView( QvvMainWindow* a_mw )
 {

@@ -2,7 +2,9 @@
 #include <QApplication>
 #include <QResource>
 
-#include <qvv.h>
+#include "qvv.h"
+#include "qvv_view.h"
+#include "qvv_main_win.h"
 
 QDesktopWidget *Desktop;
 int DeskW;

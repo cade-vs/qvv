@@ -1,20 +1,21 @@
+
 #include <QApplication>
 #include <QAction>
-#include <QLayout>
+//#include <QLayout>
 #include <QMenu>
 #include <QMenuBar>
 #include <QStatusBar>
-#include <QTextEdit>
+//#include <QTextEdit>
 #include <QFile>
 #include <QDataStream>
 #include <QFileDialog>
-#include <QMessageBox>
-#include <QSignalMapper>
+//#include <QMessageBox>
+//#include <QSignalMapper>
 #include <QPainter>
 #include <QMouseEvent>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QLabel>
+//#include <QLineEdit>
+//#include <QComboBox>
+//#include <QLabel>
 #include <QDateTime>
 #include <QProgressDialog>
 
@@ -22,7 +23,9 @@
 
 #include <qdebug.h>
 
-#include <qvv.h>
+#include "qvv.h"
+#include "qvv_view.h"
+#include "qvv_main_win.h"
 
 QString extensions_filter( ".JPG.JPEG.PNG.GIF.BMP.XPM." );
 
@@ -641,6 +644,7 @@ void QvvMainWindow::setupMenuBar()
 */
 }
 
+/*
 QAction *addAction(QMenu *menu, const QString &text, QActionGroup *group, QSignalMapper *mapper,
                     int id)
 {
@@ -653,7 +657,7 @@ QAction *addAction(QMenu *menu, const QString &text, QActionGroup *group, QSigna
     mapper->setMapping(result, id);
     return result;
 }
-
+*/
 
 
 void QvvMainWindow::showEvent(QShowEvent *event)
