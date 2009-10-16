@@ -238,6 +238,7 @@ void QvvView::keyPressEvent( QKeyEvent * e )
       case Qt::Key_Up           : moverel( 0, -16 ); break;
       case Qt::Key_Down         : moverel( 0, +16 ); break;
 
+      case Qt::Key_F3    : if (getMainWindow(file_name)) mw->show(); break;
       case Qt::Key_Escape:
       case Qt::Key_Return:
       case Qt::Key_F4    : if( mw )

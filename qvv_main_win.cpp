@@ -56,6 +56,7 @@ void QvvTreeWidget::findNext( QString str )
   if( lwi )
     {
     setCurrentItem( lwi );
+    scrollToItem( lwi );
     }
 }
 
