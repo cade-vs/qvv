@@ -1,3 +1,11 @@
+/****************************************************************************
+**
+**  QVV Image Viewer
+**  1999-2009 (c) Vladi Belperchinov-Shabanski
+**  <cade@bis.bg> <cade@biscom.net> <cade@epay.bg> <cade@datamax.bg>
+**  http://cade.datamax.bg/qvv/
+**
+****************************************************************************/
 
 #ifndef _QVV_VIEW_H_
 #define _QVV_VIEW_H_
@@ -57,6 +65,8 @@ class QvvView : public QWidget
   protected:
     void keyPressEvent ( QKeyEvent * e );
     void paintEvent( QPaintEvent * e );
+    void wheelEvent ( QWheelEvent * e );
+
 /*
     void mousePressEvent ( QMouseEvent * e );
     void mouseReleaseEvent ( QMouseEvent * e );

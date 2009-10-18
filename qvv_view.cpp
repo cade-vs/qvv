@@ -1,3 +1,11 @@
+/****************************************************************************
+**
+**  QVV Image Viewer
+**  1999-2009 (c) Vladi Belperchinov-Shabanski
+**  <cade@bis.bg> <cade@biscom.net> <cade@epay.bg> <cade@datamax.bg>
+**  http://cade.datamax.bg/qvv/
+**
+****************************************************************************/
 
 #include <QApplication>
 #include <QDesktopWidget>
@@ -365,6 +373,19 @@ void QvvView::keyPressEvent( QKeyEvent * e )
 */
       }
     }
+};
+
+void QvvView::wheelEvent ( QWheelEvent * e )
+{
+  if( e->delta() > 0 )
+    {
+    if (getMainWindow(file_name)) mw->slotGoPrev();
+    }
+  else
+    {
+    if (getMainWindow(file_name)) mw->slotGoNext();
+    }
+  e->accept();
 };
 
 void QvvView::slotHelp()

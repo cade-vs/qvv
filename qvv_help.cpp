@@ -1,3 +1,11 @@
+/****************************************************************************
+**
+**  QVV Image Viewer
+**  1999-2009 (c) Vladi Belperchinov-Shabanski
+**  <cade@bis.bg> <cade@biscom.net> <cade@epay.bg> <cade@datamax.bg>
+**  http://cade.datamax.bg/qvv/
+**
+****************************************************************************/
 
 #include <QKeyEvent>
 #include <QResource>

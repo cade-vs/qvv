@@ -1,3 +1,11 @@
+/****************************************************************************
+**
+**  QVV Image Viewer
+**  1999-2009 (c) Vladi Belperchinov-Shabanski
+**  <cade@bis.bg> <cade@biscom.net> <cade@epay.bg> <cade@datamax.bg>
+**  http://cade.datamax.bg/qvv/
+**
+****************************************************************************/
 
 #include <QApplication>
 #include <QAction>
@@ -467,8 +475,7 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
                            break;
 */
       case Qt::Key_Left  : slotGoUp(); break;
-      case Qt::Key_Right :
-      case Qt::Key_Return: enter( tree->currentItem() ); break;
+      case Qt::Key_Right : enter( tree->currentItem() ); break;
 
       case Qt::Key_BracketLeft  : slotGoPrev(); break;
       case Qt::Key_Space        :
