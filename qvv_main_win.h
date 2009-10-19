@@ -97,7 +97,8 @@ class QvvMainWindow : public QMainWindow
 
      void slotRandomItem();
 
-    void slotHelp();
+     void slotHelp();
+     void slotAbout();
 
  private:
      void setupMenuBar();

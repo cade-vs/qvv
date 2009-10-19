@@ -450,6 +450,20 @@ void QvvMainWindow::slotHelp()
   display_help();
 };
 
+void QvvMainWindow::slotAbout()
+{
+  QvvView *view;
+
+  if( views.count() > 0 )
+    view = views[0];
+  else
+    {
+    QvvView *view = new QvvView( this );
+    views.append( view );
+    }
+  view->load( ":/images/Look_To_The_Sun_by_K3win_sm.png" );
+};
+
 /*****************************************************************************/
 
 void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
@@ -612,7 +626,7 @@ void QvvMainWindow::setupMenuBar()
     menu = menuBar()->addMenu( tr("&Help") );
 
     action = menu->addAction( tr("&Contents"), this, SLOT(slotHelp()), Qt::Key_F1 );
-    //action = menu->addAction( tr("&About"),  this, SLOT(slotAbout()), Qt::AltModifier + Qt::Key_M );
+    action = menu->addAction( tr("&About"),  this, SLOT(slotAbout()) );
 
 /*
     action = menu->addAction(tr("Animated docks"));
