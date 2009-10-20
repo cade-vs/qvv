@@ -57,9 +57,9 @@ void QvvView::slotCenter()
   move( x, y );
 };
 
-void QvvView::load( QString fn )
+void QvvView::load( QString fname )
 {
-  file_name = fn;
+  file_name = fname;
   reView( opt_fit ? -1 : 100 );
 }
 

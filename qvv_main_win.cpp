@@ -458,7 +458,7 @@ void QvvMainWindow::slotAbout()
     view = views[0];
   else
     {
-    QvvView *view = new QvvView( this );
+    view = new QvvView( this );
     views.append( view );
     }
   view->load( ":/images/Look_To_The_Sun_by_K3win_sm.png" );
