@@ -35,7 +35,10 @@ void QvvHelpBrowser::keyPressEvent ( QKeyEvent * e )
       case Qt::Key_F4    : close(); break;
 
       default:
-              switch( e->text().toAscii().at(0) )
+            if( e->text() == "" )
+              QTextBrowser::keyPressEvent( e );
+            else
+              switch( e->text().toAscii().at( 0 ) )
               {
               default: QTextBrowser::keyPressEvent( e ); break;
               }

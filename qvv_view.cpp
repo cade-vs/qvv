@@ -78,10 +78,20 @@ void QvvView::reView( int a_scale )
   int ow = im.width();
   int oh = im.height();
 
-  if( ( opt_fit && a_scale < 0 && ( im.width() > DeskW || im.height() > DeskH - 50 ) ) || a_scale == -2 )
+  if( ( opt_fit && ( ow > DeskW || oh > DeskH - 50 ) ) || ( a_scale == -2 ) )
     {
-    im = im.scaled( QSize( int(DeskW * scale / 100), int(DeskH * scale / 100) - 50 ) , Qt::KeepAspectRatio );
+    // scale to fit screen when fit required or stretch to fit desktop, keep aspect
+    im = im.scaled( QSize( DeskW, DeskH - 50 ) , Qt::KeepAspectRatio, Qt::SmoothTransformation );
     scale = int(100*im.width()/ow);
+    }
+  else if( a_scale == -3 )
+    {
+    im = im.scaled( QSize( DeskW, DeskH ), Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+    scale = int(100*im.width()/ow);
+    }
+  else if( scale != 100 )
+    {
+    im = im.scaled( QSize( int( ow * scale / 100 ), int( oh * scale / 100 ) - 50 ) , Qt::KeepAspectRatio, Qt::SmoothTransformation );
     }
 
   if( pm ) delete pm;
@@ -94,10 +104,10 @@ void QvvView::reView( int a_scale )
 
   setWindowTitle( file_name + " @ " + QVariant(scale).toString() + "% ["+QVariant(w).toString()+"x"+QVariant(h).toString()+"]" );
   //setWindowIcon( QIcon( *pm ) );
-  slotCenter();
   resize( w, h );
   setMinimumSize( w, h );
   setMaximumSize( w, h );
+  slotCenter();
   if( ! isVisible() ) show();
   update();
 
@@ -275,8 +285,8 @@ void QvvView::keyPressEvent( QKeyEvent * e )
             else
               switch( e->text().toAscii().at(0) )
               {
-              case '+'  : reView( scale + 20 ); break;
-              case '-'  : reView( scale - 20 ); break;
+              case '+'  : reView( scale + 10 ); break;
+              case '-'  : reView( scale - 10 ); break;
               //case '/'  : opt_fit = 0; reView( 100 ); break;
 
               case '0'  : opt_fit = 1; reView(  -1 ); break;
@@ -293,7 +303,8 @@ void QvvView::keyPressEvent( QKeyEvent * e )
               case '.'  : rotation += 90; reView( scale ); break;
               */
 
-              case 'Z'  : reView( -2 );
+              case 'z'  : reView( -2 ); break;
+              case 'x'  : reView( -3 ); break;
               // case 'z'  : setDesktopBackground(); break;
 
               default   : QWidget::keyPressEvent( e ); break;
