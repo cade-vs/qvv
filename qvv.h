@@ -15,6 +15,8 @@
 #include <QTextBrowser>
 #include <QSettings>
 
+#define QVV_VERSION   "4.00"
+
 #define DEFAULT_EXTENSIONS_FILTER   ".JPG.JPEG.PNG.GIF.BMP.XPM."
 
 const QString ITEM_TYPE_DIR( "[DIR]" );
