@@ -1,0 +1,26 @@
+
+  Few random notes...
+
+  QVV is made in early 1999. I was really frustrated  about Windows as
+  development and desktop environment. So I switched my machine to Linux.
+
+  In early 1999 there were not many graphical applications and very few
+  image viewers with strange behaviour :) I remember xv.
+
+  I felt like it was good time to learn a bit of Qt and fill my desktop
+  "gap" for an image viewer app. It took me a bit under 2 hours to build
+  working viewer. I consider this good achievement since I never used Qt
+  at all. Those 2 hours were used and for reading docs :)
+
+  Now it is late 2009. I tried for couple of days to port QVV to Qt 4.x
+  without luck (Qt changed massively) so I decided to rewrite it from
+  the scratch. And I'm quite happy with this decision :) QVV 4 looks great
+  and will continue to update it as time allows.
+
+  Qt is the greatest! :)
+
+  Thanks for the attention!
+
+  Vladi.
+
+

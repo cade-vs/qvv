@@ -439,7 +439,7 @@ void QvvMainWindow::slotJPEGThumbs()
   opt_create_jpeg_thumbs = ! opt_create_jpeg_thumbs;
   Settings.setValue( "create_jpeg_thumbs", opt_create_jpeg_thumbs );
 
-  statusBar()->showMessage( opt_create_jpeg_thumbs ? tr( "JPEG Thumbnails creation enabled" ) : tr( "PNG Thumbnails creation enabled" ) );
+  statusBar()->showMessage( opt_create_jpeg_thumbs ? tr( "JPEG Thumbnails creation for JPEGs enabled" ) : tr( "PNG Thumbnails creation for all image types enabled" ) );
 };
 
 void QvvMainWindow::slotSmoothThumbs()
@@ -456,7 +456,13 @@ void QvvMainWindow::slotUseToolbar()
   Settings.setValue( "use_toolbar", opt_use_toolbar );
 
   if( toolbar )
+    {
     toolbar->setVisible( opt_use_toolbar ? 1 : 0 );
+    if( toolbar->isVisible() )
+      toolbar->show();
+    else
+      toolbar->hide();
+    }
 
   statusBar()->showMessage( opt_use_toolbar ? tr( "Toolbar use enabled" ) : tr( "Toolbar use enabled" ) );
 };
@@ -464,7 +470,13 @@ void QvvMainWindow::slotUseToolbar()
 void QvvMainWindow::slotToggleToolbar()
 {
   if( toolbar )
+    {
     toolbar->setVisible( toolbar->isVisible() ? 0 : 1 );
+    if( toolbar->isVisible() )
+      toolbar->show();
+    else
+      toolbar->hide();
+    }
 };
 
 void QvvMainWindow::slotChangeDir()
@@ -727,14 +739,14 @@ void QvvMainWindow::setupMenuBar()
     action->setChecked( opt_create_smooth_thumbs );
     connect( action, SIGNAL( toggled(bool) ), this, SLOT(slotSmoothThumbs()) );
 
-    action = menu->addAction( tr("Create new thumbnails in JPEG") );
+    action = menu->addAction( tr("Create new thumbnails in JPEG for JPEGs") );
     action->setCheckable( true );
     action->setChecked( opt_create_jpeg_thumbs );
     connect( action, SIGNAL( toggled(bool) ), this, SLOT(slotJPEGThumbs()) );
 
     menu->addSeparator();
 
-    action = menu->addAction( tr("Use toolbar when QVV starts") );
+    action = menu->addAction( tr("Use toolbar upon startup") );
     action->setCheckable( true );
     action->setChecked( opt_use_toolbar );
     connect( action, SIGNAL( toggled(bool) ), this, SLOT(slotUseToolbar()) );
