@@ -13,11 +13,19 @@
 #include <QString>
 #include <QDesktopWidget>
 #include <QTextBrowser>
+#include <QSettings>
 
 const QString ITEM_TYPE_DIR( "[DIR]" );
 
 extern QDesktopWidget *Desktop;
 extern int DeskW;
 extern int DeskH;
+
+extern QSettings Settings;
+
+extern int opt_thumbs_size;
+extern int opt_create_thumbs;
+extern int opt_jpeg_thumbs;
+
 
 #endif

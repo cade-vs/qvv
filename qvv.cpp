@@ -18,6 +18,12 @@ QDesktopWidget *Desktop;
 int DeskW;
 int DeskH;
 
+QSettings Settings( "CSA", "QVV4" );
+
+int opt_thumbs_size;
+int opt_create_thumbs;
+int opt_jpeg_thumbs;
+
 int main(int argc, char **argv)
 {
   QApplication app( argc, argv );
@@ -29,6 +35,10 @@ int main(int argc, char **argv)
 
   DeskW = Desktop->width();  // get width of screen
   DeskH = Desktop->height(); // get height of screen
+
+  opt_thumbs_size   = Settings.value( "thumbs_size", 128 ).toInt();
+  opt_create_thumbs = Settings.value( "create_thumbs", 0 ).toInt();
+  opt_jpeg_thumbs   = Settings.value( "jpeg_thumbs", 0 ).toInt();
 
   QStringList args = app.arguments();
   QStringList imgs;

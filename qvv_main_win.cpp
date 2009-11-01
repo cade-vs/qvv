@@ -19,6 +19,7 @@
 #include <QMouseEvent>
 #include <QDateTime>
 #include <QProgressDialog>
+#include <QImage>
 
 #include <QTreeWidgetItem>
 
@@ -95,8 +96,8 @@ QvvMainWindow::QvvMainWindow()
 {
     rand_seeded = 0;
 
-    opt_thumbs    = 0;
-    opt_dirs_only = 0;
+    opt_thumbs        = 0;
+    opt_dirs_only     = 0;
 
     last_sort_col = 1;
     last_sort_ord = Qt::AscendingOrder;
@@ -240,13 +241,46 @@ void QvvMainWindow::loadThumbs()
     QTreeWidgetItem *item = tree->topLevelItem( i );
     if( item->text( 0 ) == ITEM_TYPE_DIR ) continue;
 
-    QString icon_fn = new_path + "/.thumbnails/" + item->text( 1 ) + ".png";
-    if( QFile::exists( icon_fn ) )
+    QString icon_dir = new_path + "/.thumbnails";
+    if( opt_create_thumbs )
       {
-      QIcon icon( icon_fn );
+      if( ! cdir.exists( icon_dir ) )
+        cdir.mkdir( icon_dir );
+      }
+
+    QStringList icon_fns;
+    icon_fns.append( new_path + "/.thumbnails/" + item->text( 1 ) + ".jpg" ); // JPEG thumb idex is 0!
+    icon_fns.append( new_path + "/.thumbnails/" + item->text( 1 ) + ".png" ); // PNG  thumb idex is 1!
+
+    int found = -1;
+    for( int z = 0; z < icon_fns.count(); z++ )
+      {
+      if( QFile::exists( icon_fns[z] ) )
+        {
+        found = z;
+        break;
+        }
+      }
+
+    if( found == -1 && opt_create_thumbs )
+      {
+      QString file_name = new_path + "/" + item->text( 1 );
+      QImage im;
+      im.load( file_name );
+      if( im.width() > opt_thumbs_size || im.height() > opt_thumbs_size )
+        im = im.scaled( QSize( opt_thumbs_size, opt_thumbs_size ) , Qt::KeepAspectRatio, Qt::FastTransformation );
+      int thumb_format_index = opt_jpeg_thumbs ? 0 : 1; // use JPEG/PNG index!
+      im.save( icon_fns[ thumb_format_index ] );
+      found = thumb_format_index;
+      }
+
+    if( found > -1 )
+      {
+      QIcon icon( icon_fns[ found ] );
       if( ! icon.isNull() ) item->setIcon( 1, icon );
       }
-    }
+
+    } // for tree
 
 }
 
@@ -383,6 +417,22 @@ void QvvMainWindow::slotThumbs()
   if( opt_thumbs ) loadThumbs();
 
   statusBar()->showMessage( opt_thumbs ? tr( "Thumbnails enabled" ) : tr( "Thumbnails disabled" ) );
+};
+
+void QvvMainWindow::slotCreateThumbs()
+{
+  opt_create_thumbs = ! opt_create_thumbs;
+  Settings.setValue( "create_thumbs", opt_create_thumbs );
+
+  statusBar()->showMessage( opt_thumbs ? tr( "Thumbnails creation enabled" ) : tr( "Thumbnails creation disabled" ) );
+};
+
+void QvvMainWindow::slotJPEGThumbs()
+{
+  opt_create_thumbs = ! opt_create_thumbs;
+  Settings.setValue( "jpeg_thumbs", opt_create_thumbs );
+
+  statusBar()->showMessage( opt_thumbs ? tr( "JPEG Thumbnails creation enabled" ) : tr( "PNG Thumbnails creation enabled" ) );
 };
 
 void QvvMainWindow::slotChangeDir()
@@ -600,7 +650,7 @@ void QvvMainWindow::setupMenuBar()
 
     menu = menuBar()->addMenu( tr("&Go"));
 
-    action = menu->addAction( tr("Go to p&arent directory"), this, SLOT(slotGoUp()), Qt::AltModifier + Qt::Key_A );
+    action = menu->addAction( tr("Go to p&arent directory"), this, SLOT(slotGoUp()), Qt::Key_Backspace );
     action->setIcon( QIcon( ":/images/go-up.png" ) );
 
     menu->addAction( tr("Change &directory"), this, SLOT(slotChangeDir()), Qt::AltModifier + Qt::Key_D );
@@ -623,10 +673,24 @@ void QvvMainWindow::setupMenuBar()
 
     /*--------------------------------------------------------------------*/
 
+    menu = menuBar()->addMenu( tr("&Settings"));
+
+    action = menu->addAction( tr("Create thumbnails if needed") );
+    action->setCheckable( true );
+    action->setChecked( opt_create_thumbs );
+    connect( action, SIGNAL( toggled(bool) ), this, SLOT(slotCreateThumbs()) );
+
+        action = menu->addAction( tr("Create new thumbnails in JPEG") );
+    action->setCheckable( true );
+    action->setChecked( opt_jpeg_thumbs );
+    connect( action, SIGNAL( toggled(bool) ), this, SLOT(slotJPEGThumbs()) );
+
+    /*--------------------------------------------------------------------*/
+
     menu = menuBar()->addMenu( tr("&Help") );
 
     action = menu->addAction( tr("&Contents"), this, SLOT(slotHelp()), Qt::Key_F1 );
-    action = menu->addAction( tr("&About"),  this, SLOT(slotAbout()) );
+    action = menu->addAction( tr("&About"),  this, SLOT(slotAbout()), Qt::AltModifier + Qt::Key_A );
 
 /*
     action = menu->addAction(tr("Animated docks"));
