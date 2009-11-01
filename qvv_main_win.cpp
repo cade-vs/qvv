@@ -105,7 +105,7 @@ QvvMainWindow::QvvMainWindow()
     setAttribute( Qt::WA_DeleteOnClose );
 
     setObjectName( "QvvMainWindow" );
-    setWindowTitle( "QVV/4" );
+    setWindowTitle( QString() + " QVV " + QVV_VERSION );
 
     // crashes ICEWM :(
     //setWindowIcon( QIcon( QPixmap( ":/images/qvv_icon_128x128.png" ) ) );
@@ -167,7 +167,7 @@ void QvvMainWindow::loadDir( QString path )
 
   QString new_path = cdir.absolutePath();
 
-  setWindowTitle( "QVV/4: " + new_path );
+  setWindowTitle( QString() + " QVV " + QVV_VERSION + ": " + new_path );
 
   QString save_item_name;
   if( tree->topLevelItemCount() > 0 ) save_item_name = tree->currentItem()->text( 1 );
@@ -556,6 +556,7 @@ void QvvMainWindow::slotAbout()
     views.append( view );
     }
   view->load( ":/images/Green_woman_by_ValentinaKallias_edit2.jpg" );
+  view->setWindowTitle( QString() + " QVV " + QVV_VERSION );
 };
 
 /*****************************************************************************/
