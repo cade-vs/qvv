@@ -30,8 +30,6 @@
 #include "qvv_main_win.h"
 #include "qvv_help.h"
 
-QString extensions_filter( ".JPG.JPEG.PNG.GIF.BMP.XPM." );
-
 /*****************************************************************************/
 
 QvvTreeWidget::QvvTreeWidget( QWidget *parent )
@@ -94,6 +92,8 @@ void QvvTreeWidget::keyPressEvent ( QKeyEvent * e )
 QvvMainWindow::QvvMainWindow()
     : QMainWindow()
 {
+    toolbar = NULL;
+
     rand_seeded = 0;
 
     opt_thumbs        = 0;
@@ -108,7 +108,7 @@ QvvMainWindow::QvvMainWindow()
     setWindowTitle( "QVV/4" );
 
     // crashes ICEWM :(
-    // setWindowIcon( QIcon( ":/images/Half_Face_by_uzorpatorica.jpg" ) );
+    //setWindowIcon( QIcon( QPixmap( ":/images/qvv_icon_128x128.png" ) ) );
 
     resize( 640, 400 );
 
@@ -450,6 +450,23 @@ void QvvMainWindow::slotSmoothThumbs()
   statusBar()->showMessage( opt_create_smooth_thumbs ? tr( "Smooth Thumbnails creation enabled" ) : tr( "Fast Thumbnails creation enabled" ) );
 };
 
+void QvvMainWindow::slotUseToolbar()
+{
+  opt_use_toolbar = ! opt_use_toolbar;
+  Settings.setValue( "use_toolbar", opt_use_toolbar );
+
+  if( toolbar )
+    toolbar->setVisible( opt_use_toolbar ? 1 : 0 );
+
+  statusBar()->showMessage( opt_use_toolbar ? tr( "Toolbar use enabled" ) : tr( "Toolbar use enabled" ) );
+};
+
+void QvvMainWindow::slotToggleToolbar()
+{
+  if( toolbar )
+    toolbar->setVisible( toolbar->isVisible() ? 0 : 1 );
+};
+
 void QvvMainWindow::slotChangeDir()
 {
   goToDir( 0 );
@@ -617,8 +634,12 @@ void QvvMainWindow::actionTriggered(QAction *action)
 void QvvMainWindow::setupMenuBar()
 {
     /*--------------------------------------------------------------------*/
+    QMenu    *menu;
+    toolbar = new QToolBar( this );
 
-    QMenu *menu = menuBar()->addMenu( tr("&File") );
+    toolbar->setVisible( opt_use_toolbar ? 1 : 0 );
+
+    menu = menuBar()->addMenu( tr("&File") );
 
     QAction *action;
 /*
@@ -643,6 +664,8 @@ void QvvMainWindow::setupMenuBar()
 
     menu = menuBar()->addMenu( tr("&View"));
 
+    action = menu->addAction( tr("&Toggle toolbar"), this, SLOT(slotToggleToolbar()) );
+
     action = menu->addAction( tr("Enable &thumbnails") );
     action->setCheckable( true );
     action->setChecked( opt_thumbs );
@@ -660,18 +683,21 @@ void QvvMainWindow::setupMenuBar()
     action = menu->addAction( tr("Sort by &Name"),        this, SLOT(slotSortColumn1()), Qt::AltModifier + Qt::Key_N );
     action = menu->addAction( tr("Sort by &Modify Time"), this, SLOT(slotSortColumn3()), Qt::AltModifier + Qt::Key_M );
 
-
     /*--------------------------------------------------------------------*/
 
     menu = menuBar()->addMenu( tr("&Go"));
 
     action = menu->addAction( tr("Go to p&arent directory"), this, SLOT(slotGoUp()), Qt::Key_Backspace );
     action->setIcon( QIcon( ":/images/go-up.png" ) );
+    toolbar->addAction( action );
 
-    menu->addAction( tr("Change &directory"), this, SLOT(slotChangeDir()), Qt::AltModifier + Qt::Key_D );
+    action = menu->addAction( tr("Change &directory"), this, SLOT(slotChangeDir()), Qt::AltModifier + Qt::Key_D );
+    action->setIcon( QIcon( ":/images/folder.png" ) );
+    toolbar->addAction( action );
 
     action = menu->addAction( tr("Go to &home directory"), this, SLOT(slotHomeDir()), Qt::AltModifier + Qt::Key_Home );
     action->setIcon( QIcon( ":/images/go-home.png" ) );
+    toolbar->addAction( action );
 
     menu->addSeparator();
 
@@ -681,8 +707,9 @@ void QvvMainWindow::setupMenuBar()
 
     menu = menuBar()->addMenu( tr("&Window"));
 
-    action = menu->addAction( tr("&New window"), this, SLOT(slotNewWindow()), Qt::Key_F3 );
+    action = menu->addAction( tr("&New browser window"), this, SLOT(slotNewWindow()), Qt::Key_F3 );
     action->setIcon( QIcon( ":/images/window-new.png" ) );
+    toolbar->addAction( action );
 
     menu->addAction( tr("&Close window"), this, SLOT(close()), Qt::Key_F4 );
 
@@ -705,56 +732,29 @@ void QvvMainWindow::setupMenuBar()
     action->setChecked( opt_create_jpeg_thumbs );
     connect( action, SIGNAL( toggled(bool) ), this, SLOT(slotJPEGThumbs()) );
 
+    menu->addSeparator();
+
+    action = menu->addAction( tr("Use toolbar when QVV starts") );
+    action->setCheckable( true );
+    action->setChecked( opt_use_toolbar );
+    connect( action, SIGNAL( toggled(bool) ), this, SLOT(slotUseToolbar()) );
+
     /*--------------------------------------------------------------------*/
 
     menu = menuBar()->addMenu( tr("&Help") );
 
-    action = menu->addAction( tr("&Contents"), this, SLOT(slotHelp()), Qt::Key_F1 );
+    action = menu->addAction( tr("&Help Contents"), this, SLOT(slotHelp()), Qt::Key_F1 );
+    action->setIcon( QIcon( ":/images/help-browser.png" ) );
+    toolbar->addAction( action );
+
     action = menu->addAction( tr("&About"),  this, SLOT(slotAbout()), Qt::AltModifier + Qt::Key_A );
+    action->setIcon( QIcon( ":/images/face-glasses.png" ) );
+    toolbar->addAction( action );
 
-/*
-    action = menu->addAction(tr("Animated docks"));
-    action->setCheckable(true);
-    action->setChecked(dockOptions() & AnimatedDocks);
-    connect(action, SIGNAL(toggled(bool)), this, SLOT(setDockOptions()));
+    /*--------------------------------------------------------------------*/
 
-    action = menu->addAction(tr("Allow nested docks"));
-    action->setCheckable(true);
-    action->setChecked(dockOptions() & AllowNestedDocks);
-    connect(action, SIGNAL(toggled(bool)), this, SLOT(setDockOptions()));
-
-    action = menu->addAction(tr("Allow tabbed docks"));
-    action->setCheckable(true);
-    action->setChecked(dockOptions() & AllowTabbedDocks);
-    connect(action, SIGNAL(toggled(bool)), this, SLOT(setDockOptions()));
-
-    action = menu->addAction(tr("Force tabbed docks"));
-    action->setCheckable(true);
-    action->setChecked(dockOptions() & ForceTabbedDocks);
-    connect(action, SIGNAL(toggled(bool)), this, SLOT(setDockOptions()));
-
-    action = menu->addAction(tr("Vertical tabs"));
-    action->setCheckable(true);
-    action->setChecked(dockOptions() & VerticalTabs);
-    connect(action, SIGNAL(toggled(bool)), this, SLOT(setDockOptions()));
-*/
+    addToolBar( toolbar );
 }
-
-/*
-QAction *addAction(QMenu *menu, const QString &text, QActionGroup *group, QSignalMapper *mapper,
-                    int id)
-{
-    bool first = group->actions().isEmpty();
-    QAction *result = menu->addAction(text);
-    result->setCheckable(true);
-    result->setChecked(first);
-    group->addAction(result);
-    QObject::connect(result, SIGNAL(triggered()), mapper, SLOT(map()));
-    mapper->setMapping(result, id);
-    return result;
-}
-*/
-
 
 void QvvMainWindow::showEvent(QShowEvent *event)
 {

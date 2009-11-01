@@ -14,6 +14,7 @@
 #include <QTreeWidget>
 #include <QDir>
 #include <QMenu>
+#include <QToolBar>
 #include <QString>
 
 class QvvView;
@@ -37,7 +38,7 @@ class QvvMainWindow : public QMainWindow
 
      Q_OBJECT
 
-     QMenu           *menu;
+     QToolBar *toolbar;
 
      int rand_seeded;
 
@@ -87,6 +88,10 @@ class QvvMainWindow : public QMainWindow
      void slotCreateThumbs();
      void slotJPEGThumbs();
      void slotSmoothThumbs();
+
+     void slotUseToolbar();
+     void slotToggleToolbar();
+
      void slotChangeDir();
      void slotHomeDir();
      void slotReloadDir();

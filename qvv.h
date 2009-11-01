@@ -15,11 +15,15 @@
 #include <QTextBrowser>
 #include <QSettings>
 
+#define DEFAULT_EXTENSIONS_FILTER   ".JPG.JPEG.PNG.GIF.BMP.XPM."
+
 const QString ITEM_TYPE_DIR( "[DIR]" );
 
 extern QDesktopWidget *Desktop;
 extern int DeskW;
 extern int DeskH;
+
+extern QString extensions_filter;
 
 extern QSettings Settings;
 
@@ -27,6 +31,7 @@ extern int opt_thumbs_size;
 extern int opt_create_thumbs;
 extern int opt_create_smooth_thumbs;
 extern int opt_create_jpeg_thumbs;
+extern int opt_use_toolbar;
 
 
 #endif
