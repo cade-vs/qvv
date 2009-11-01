@@ -555,7 +555,7 @@ void QvvMainWindow::slotAbout()
     view = new QvvView( this );
     views.append( view );
     }
-  view->load( ":/images/Green_woman_by_ValentinaKallias_edit2.jpg" );
+  view->load( ":/images/Green_woman_by_ValentinaKallias_edit2.png" );
   view->setWindowTitle( QString() + " QVV " + QVV_VERSION );
 };
 
