@@ -268,8 +268,15 @@ void QvvMainWindow::loadThumbs()
       QImage im;
       im.load( file_name );
       if( im.width() > opt_thumbs_size || im.height() > opt_thumbs_size )
-        im = im.scaled( QSize( opt_thumbs_size, opt_thumbs_size ) , Qt::KeepAspectRatio, Qt::FastTransformation );
-      int thumb_format_index = opt_jpeg_thumbs ? 0 : 1; // use JPEG/PNG index!
+        im = im.scaled( QSize( opt_thumbs_size, opt_thumbs_size ) , Qt::KeepAspectRatio, opt_create_smooth_thumbs ? Qt::SmoothTransformation : Qt::FastTransformation );
+      int thumb_format_index = 1; // use PNG index!
+      if( opt_create_jpeg_thumbs )
+        {
+        QFileInfo fi( file_name );
+        QString ext = fi.suffix().toLower();
+        if( ext == "jpg" || ext == "jpeg" )
+          thumb_format_index = 0; // use JPEG index! but only for jpeg files
+        }
       im.save( icon_fns[ thumb_format_index ] );
       found = thumb_format_index;
       }
@@ -424,15 +431,23 @@ void QvvMainWindow::slotCreateThumbs()
   opt_create_thumbs = ! opt_create_thumbs;
   Settings.setValue( "create_thumbs", opt_create_thumbs );
 
-  statusBar()->showMessage( opt_thumbs ? tr( "Thumbnails creation enabled" ) : tr( "Thumbnails creation disabled" ) );
+  statusBar()->showMessage( opt_create_thumbs ? tr( "Thumbnails creation enabled" ) : tr( "Thumbnails creation disabled" ) );
 };
 
 void QvvMainWindow::slotJPEGThumbs()
 {
-  opt_create_thumbs = ! opt_create_thumbs;
-  Settings.setValue( "jpeg_thumbs", opt_create_thumbs );
+  opt_create_jpeg_thumbs = ! opt_create_jpeg_thumbs;
+  Settings.setValue( "create_jpeg_thumbs", opt_create_jpeg_thumbs );
 
-  statusBar()->showMessage( opt_thumbs ? tr( "JPEG Thumbnails creation enabled" ) : tr( "PNG Thumbnails creation enabled" ) );
+  statusBar()->showMessage( opt_create_jpeg_thumbs ? tr( "JPEG Thumbnails creation enabled" ) : tr( "PNG Thumbnails creation enabled" ) );
+};
+
+void QvvMainWindow::slotSmoothThumbs()
+{
+  opt_create_smooth_thumbs = ! opt_create_smooth_thumbs;
+  Settings.setValue( "create_smooth_thumbs", opt_create_smooth_thumbs );
+
+  statusBar()->showMessage( opt_create_smooth_thumbs ? tr( "Smooth Thumbnails creation enabled" ) : tr( "Fast Thumbnails creation enabled" ) );
 };
 
 void QvvMainWindow::slotChangeDir()
@@ -680,9 +695,14 @@ void QvvMainWindow::setupMenuBar()
     action->setChecked( opt_create_thumbs );
     connect( action, SIGNAL( toggled(bool) ), this, SLOT(slotCreateThumbs()) );
 
-        action = menu->addAction( tr("Create new thumbnails in JPEG") );
+    action = menu->addAction( tr("Create smooth thumbnails") );
     action->setCheckable( true );
-    action->setChecked( opt_jpeg_thumbs );
+    action->setChecked( opt_create_smooth_thumbs );
+    connect( action, SIGNAL( toggled(bool) ), this, SLOT(slotSmoothThumbs()) );
+
+    action = menu->addAction( tr("Create new thumbnails in JPEG") );
+    action->setCheckable( true );
+    action->setChecked( opt_create_jpeg_thumbs );
     connect( action, SIGNAL( toggled(bool) ), this, SLOT(slotJPEGThumbs()) );
 
     /*--------------------------------------------------------------------*/

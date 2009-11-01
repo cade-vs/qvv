@@ -86,6 +86,7 @@ class QvvMainWindow : public QMainWindow
      void slotThumbs();
      void slotCreateThumbs();
      void slotJPEGThumbs();
+     void slotSmoothThumbs();
      void slotChangeDir();
      void slotHomeDir();
      void slotReloadDir();

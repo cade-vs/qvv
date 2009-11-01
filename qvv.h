@@ -25,7 +25,8 @@ extern QSettings Settings;
 
 extern int opt_thumbs_size;
 extern int opt_create_thumbs;
-extern int opt_jpeg_thumbs;
+extern int opt_create_smooth_thumbs;
+extern int opt_create_jpeg_thumbs;
 
 
 #endif
