@@ -9,6 +9,18 @@
     x feature removed
     % note
 
+  4.01 03.Nov.2009
+
+    + 1. Added contect menu in image view windows.
+
+    + 2. Move image window with left mouse button + drag
+
+    ! 3. Fixed progress dialog responsiveness when loading thumbnails.
+
+    ! 4. Center progress dialog inside browser window.
+
+    ! 5. Help updated with missing key descriptions.
+
   4.00 01.Nov.2009
 
     % 1. QVV is now completely rewritten from the scratch!

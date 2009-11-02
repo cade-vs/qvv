@@ -229,6 +229,7 @@ void QvvMainWindow::loadDir( QString path )
 void QvvMainWindow::loadThumbs()
 {
   QProgressDialog pd( "Loading thumbnails...", "Cancel", 0, tree->topLevelItemCount() - 1 );
+  pd.move( x() + ( ( width() - pd.width() ) / 2 ), y() + ( ( height() - pd.height() ) / 2) );
 
   QString new_path = cdir.absolutePath();
 
@@ -237,6 +238,7 @@ void QvvMainWindow::loadThumbs()
     pd.setValue( i );
     if ( pd.wasCanceled() )
       break;
+    QApplication::processEvents();
 
     QTreeWidgetItem *item = tree->topLevelItem( i );
     if( item->text( 0 ) == ITEM_TYPE_DIR ) continue;

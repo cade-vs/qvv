@@ -11,6 +11,7 @@
 #include <QDesktopWidget>
 #include <QPainter>
 #include <QKeyEvent>
+#include <QAction>
 
 #include <qdebug.h>
 
@@ -29,6 +30,10 @@ QvvView::QvvView( QvvMainWindow* a_mw )
   opt_center = 0;
   scale      = 100;
   pm         = NULL;
+
+  popup_menu = NULL;
+
+  mouse_move = 0;
 
   move( 0, 0 );
 }
@@ -269,7 +274,7 @@ void QvvView::keyPressEvent( QKeyEvent * e )
                            break;
 
       case Qt::Key_Insert       : opt_center = ! opt_center;
-      case Qt::Key_Tab          : slotCenter(); moverel( 0, 0 ); break;
+      case Qt::Key_Tab          : slotCenter(); break;
 
       case Qt::Key_PageUp       :
       case Qt::Key_BracketLeft  : if (getMainWindow(file_name)) mw->slotGoPrev(); break;
@@ -385,6 +390,69 @@ void QvvView::keyPressEvent( QKeyEvent * e )
       }
     }
 };
+
+void QvvView::popup( QPoint pos )
+{
+  if( popup_menu ) delete popup_menu;
+  popup_menu = new QMenu( QString( "Image operations" ), this );
+
+  QAction *action;
+  //action = popup_menu->addAction( tr("&Center image on the screen"), this, SLOT(slotCenter()), Qt::Key_Insert );
+
+  action = popup_menu->addAction( tr("&Fit image to screen if larger"), this, SLOT(slotViewFit()), '0' );
+  action = popup_menu->addAction( tr("Show image at &100% (full size)"), this, SLOT(slotView100()), '1' );
+  action = popup_menu->addAction( tr("Show image at &200%"), this, SLOT(slotView200()), '2' );
+  action = popup_menu->addAction( tr("Show image at &300%"), this, SLOT(slotView300()), '3' );
+  action = popup_menu->addAction( tr("Show image at &400%"), this, SLOT(slotView400()), '4' );
+  action = popup_menu->addAction( tr("Show image at &500%"), this, SLOT(slotView500()), '5' );
+
+  action = popup_menu->addAction( tr("Move to 'home' of the screen"), this, SLOT(slotViewHome()), Qt::Key_Home );
+  if( opt_center )
+    {
+    action = popup_menu->addAction( tr("Disable &Center image"), this, SLOT(slotViewNoCenter()), Qt::Key_Insert );
+    }
+  else
+    {
+    action = popup_menu->addAction( tr("Enable &Center image"), this, SLOT(slotViewCenter()), Qt::Key_Insert );
+    }
+
+  popup_menu->popup( pos );
+}
+
+void QvvView::mousePressEvent ( QMouseEvent * e )
+{
+
+  if( e->button() == Qt::RightButton )
+    popup( mapToGlobal( e->pos() ) );
+  else
+    {
+    mouse_move = 1;
+    mouse_move_mo = mapToGlobal( e->pos() );
+    mouse_move_wo = this->pos();
+    setCursor( Qt::OpenHandCursor );
+    }
+
+};
+
+void QvvView::mouseReleaseEvent ( QMouseEvent * e )
+{
+  if( mouse_move )
+    {
+    mouse_move = 0;
+    setCursor( Qt::ArrowCursor );
+    }
+};
+
+void QvvView::mouseMoveEvent ( QMouseEvent * e )
+{
+  if( mouse_move )
+    {
+    QPoint diff = mapToGlobal( e->pos() ) - mouse_move_mo;
+    QPoint newpos = mouse_move_wo + diff;
+    move( newpos.x(), newpos.y() );
+    }
+};
+
 
 void QvvView::wheelEvent ( QWheelEvent * e )
 {

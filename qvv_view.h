@@ -13,6 +13,8 @@
 #include <QWidget>
 #include <QString>
 #include <QPixmap>
+#include <QMenu>
+#include <QPoint>
 
 class QvvMainWindow;
 
@@ -26,6 +28,8 @@ class QvvView : public QWidget
 
     QPixmap *pm;
 
+    QMenu *popup_menu;
+
     QString file_name;
 
     int opt_fit;
@@ -38,6 +42,10 @@ class QvvView : public QWidget
     int mouse_pan_y;
 
     int rotation;
+
+    int mouse_move;
+    QPoint mouse_move_mo; // mouse origin
+    QPoint mouse_move_wo; // window origin
 
   public:
 
@@ -56,14 +64,30 @@ class QvvView : public QWidget
     QvvMainWindow* getMainWindow( QString fn );
 
     void moverel( int dx, int dy );
+    void popup( QPoint pos );
 
   public slots:
     void slotCenter();
 
     void slotHelp();
 
+    void slotViewFit() { opt_fit = 1; reView(  -1 ); };
+    void slotView100() { reView( 100 ); };
+    void slotView200() { reView( 200 ); };
+    void slotView300() { reView( 300 ); };
+    void slotView400() { reView( 400 ); };
+    void slotView500() { reView( 500 ); };
+    void slotViewCenter() { opt_center = 1; reView( -1 ); }
+    void slotViewNoCenter() { opt_center = 0; reView( -1 ); }
+    void slotViewHome() { opt_center = 0; move( 0, 0 ); reView( -1 ); }
+
   protected:
     void keyPressEvent ( QKeyEvent * e );
+
+    void mousePressEvent ( QMouseEvent * e );
+    void mouseReleaseEvent ( QMouseEvent * e );
+    void mouseMoveEvent ( QMouseEvent * e );
+
     void paintEvent( QPaintEvent * e );
     void wheelEvent ( QWheelEvent * e );
 
