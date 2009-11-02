@@ -21,6 +21,9 @@
 
     ! 5. Help updated with missing key descriptions.
 
+    ! 6. Now multiple images can be displayed. Select multiple images and
+         press Ctrl+RightArrow or use menu entry or toolabr button.
+
   4.00 01.Nov.2009
 
     % 1. QVV is now completely rewritten from the scratch!

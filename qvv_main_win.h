@@ -27,7 +27,7 @@ class QvvTreeWidget : public QTreeWidget
  public:
      QvvTreeWidget( QWidget *parent );
 
-     void findNext( QString str );
+     void findNext( QString str, int full_match = 0 );
 
  protected:
      void keyPressEvent(QKeyEvent *event);
@@ -59,6 +59,8 @@ class QvvMainWindow : public QMainWindow
      QvvMainWindow();
      ~QvvMainWindow();
 
+     void closeAllViews();
+
      void loadDir( QString path );
      void goToDir( int mode );
 
@@ -66,6 +68,7 @@ class QvvMainWindow : public QMainWindow
 
      void goPrevNext( int r );
 
+     void setActiveView( QvvView *view );
      void closeView( QvvView *view );
 
      void sortColumn( int n );
@@ -76,6 +79,8 @@ class QvvMainWindow : public QMainWindow
 
  public slots:
      void enter( QTreeWidgetItem *item );
+     void enterCurrent();
+     void enterAllSelected();
 
      void actionTriggered(QAction *action);
      void switchLayoutDirection();

@@ -66,6 +66,8 @@ class QvvView : public QWidget
     void moverel( int dx, int dy );
     void popup( QPoint pos );
 
+    QString getFileName() { return file_name; };
+
   public slots:
     void slotCenter();
 

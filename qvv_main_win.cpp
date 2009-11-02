@@ -22,6 +22,7 @@
 #include <QImage>
 
 #include <QTreeWidgetItem>
+#include <QAbstractItemView>
 
 #include <qdebug.h>
 
@@ -37,7 +38,7 @@ QvvTreeWidget::QvvTreeWidget( QWidget *parent )
 {
 }
 
-void QvvTreeWidget::findNext( QString str )
+void QvvTreeWidget::findNext( QString str, int full_match )
 {
   QTreeWidgetItem *lwi = currentItem();
 
@@ -57,7 +58,8 @@ void QvvTreeWidget::findNext( QString str )
     if( i >= x ) i = 0;
     if( i == start ) break;
     lwi = topLevelItem( i );
-    if( lwi->text( 1 ).toUpper().indexOf( str.toUpper() ) == 0 ) break;
+    if(   full_match && lwi->text( 1 ).toUpper() == str.toUpper() ) break;
+    if( ! full_match && lwi->text( 1 ).toUpper().indexOf( str.toUpper() ) == 0 ) break;
     lwi = NULL;
     }
   if( lwi )
@@ -137,6 +139,8 @@ QvvMainWindow::QvvMainWindow()
 
     tree->setDragEnabled( 1 );
 
+    tree->setSelectionMode( QAbstractItemView::ExtendedSelection );
+
     setCentralWidget( tree );
 
     setupMenuBar();
@@ -149,6 +153,11 @@ QvvMainWindow::QvvMainWindow()
 }
 
 QvvMainWindow::~QvvMainWindow()
+{
+  closeAllViews();
+}
+
+void QvvMainWindow::closeAllViews()
 {
   while( views.count() > 0 )
     {
@@ -215,7 +224,7 @@ void QvvMainWindow::loadDir( QString path )
       tree->findNext( save_item_name );
     }
 
-  statusBar()->showMessage( QString( "Loaded items: " ) + QVariant( tree->topLevelItemCount() ).toString() );
+  statusBar()->showMessage( QString( tr( "Loaded items" ) ) + ": " + QVariant( tree->topLevelItemCount() ).toString() );
 
   if( opt_thumbs )
     loadThumbs();
@@ -228,7 +237,7 @@ void QvvMainWindow::loadDir( QString path )
 
 void QvvMainWindow::loadThumbs()
 {
-  QProgressDialog pd( "Loading thumbnails...", "Cancel", 0, tree->topLevelItemCount() - 1 );
+  QProgressDialog pd( tr( "Loading thumbnails..." ), tr( "Cancel" ), 0, tree->topLevelItemCount() - 1 );
   pd.move( x() + ( ( width() - pd.width() ) / 2 ), y() + ( ( height() - pd.height() ) / 2) );
 
   QString new_path = cdir.absolutePath();
@@ -335,7 +344,47 @@ void QvvMainWindow::enter( QTreeWidgetItem *item )
     }
 };
 
+void QvvMainWindow::enterCurrent()
+{
+  enter( tree->currentItem() );
+}
+
+void QvvMainWindow::enterAllSelected()
+{
+  QList<QTreeWidgetItem *> selected = tree->selectedItems();
+  if( selected.count() > 1 )
+    {
+    closeAllViews();
+    QTreeWidgetItem *item;
+    for( int i = 0; i < selected.count(); i++ )
+      {
+      item = selected[i];
+      if( item->text( 0 ) == ITEM_TYPE_DIR ) continue;
+      QvvView *view;
+      view = new QvvView( this );
+      views.prepend( view );
+      view->load( cdir.absolutePath() + "/" + item->text( 1 ) );
+      }
+    }
+  else
+    {
+    statusBar()->showMessage( tr( "Error: More than one selected image required" ) );
+    }
+}
+
 /*****************************************************************************/
+
+void QvvMainWindow::setActiveView( QvvView *view )
+{
+  if( views.count() < 1 ) return;
+  int z = views.indexOf( view );
+  if( z > 0 )
+    {
+    views.swap( 0, z );
+    QFileInfo fi( views[0]->getFileName() );
+    tree->findNext( fi.fileName(), 1 );
+    }
+};
 
 void QvvMainWindow::closeView( QvvView *view )
 {
@@ -567,7 +616,15 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
 {
 
   e->accept();
-  if( e->modifiers() & Qt::ALT )
+  if( e->modifiers() & Qt::CTRL )
+    {
+    switch( e->key() )
+      {
+      case Qt::Key_Right : enterAllSelected(); break;
+      default: e->ignore(); QMainWindow::keyPressEvent( e ); break;
+      }
+    }
+  else if( e->modifiers() & Qt::ALT )
     {
     switch( e->key() )
       {
@@ -716,7 +773,12 @@ void QvvMainWindow::setupMenuBar()
 
     menu->addSeparator();
 
-    action = menu->addAction( tr("Go to &Random image"),        this, SLOT(slotRandomItem()), Qt::Key_Asterisk );
+    action = menu->addAction( tr("Go to &Random image"),   this, SLOT(slotRandomItem()), Qt::Key_Asterisk );
+    action = menu->addAction( tr("Activate current item"),  this, SLOT(enterCurrent()), Qt::Key_Right );
+
+    action = menu->addAction( tr("Display all &selected images"),  this, SLOT(enterAllSelected()), Qt::ControlModifier + Qt::Key_Right );
+    action->setIcon( QIcon( ":/images/view_all.png" ) );
+    toolbar->addAction( action );
 
     /*--------------------------------------------------------------------*/
 

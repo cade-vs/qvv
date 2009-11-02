@@ -277,12 +277,28 @@ void QvvView::keyPressEvent( QKeyEvent * e )
       case Qt::Key_Tab          : slotCenter(); break;
 
       case Qt::Key_PageUp       :
-      case Qt::Key_BracketLeft  : if (getMainWindow(file_name)) mw->slotGoPrev(); break;
+      case Qt::Key_BracketLeft  : if(getMainWindow(file_name))
+                                    {
+                                    mw->setActiveView( this );
+                                    mw->slotGoPrev();
+                                    }
+                                  break;
+
       case Qt::Key_Space        :
       case Qt::Key_PageDown     :
-      case Qt::Key_BracketRight : if (getMainWindow(file_name)) mw->slotGoNext(); break;
+      case Qt::Key_BracketRight : if (getMainWindow(file_name))
+                                    {
+                                    mw->setActiveView( this );
+                                    mw->slotGoNext();
+                                    }
+                                  break;
 
-      case Qt::Key_Asterisk     : if (getMainWindow(file_name)) mw->slotRandomItem(); break;
+      case Qt::Key_Asterisk     : if (getMainWindow(file_name))
+                                    {
+                                    mw->setActiveView( this );
+                                    mw->slotRandomItem();
+                                    }
+                                  break;
 
       default:
             if( e->text() == "" )
