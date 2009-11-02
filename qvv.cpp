@@ -65,6 +65,7 @@ int main(int argc, char **argv)
       {
       QString str = imgs.takeFirst();
       QvvView *view = new QvvView( NULL );
+      // FIXME: TODO:
       //main_win->views.append( view );
       view->load( str );
       }
