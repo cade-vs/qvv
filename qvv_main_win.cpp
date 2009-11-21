@@ -20,9 +20,8 @@
 #include <QDateTime>
 #include <QProgressDialog>
 #include <QImage>
-#include <QDialog>
 #include <QPixmap>
-#include <QPushButton>
+#include <QCryptographicHash>
 
 #include <QTreeWidgetItem>
 #include <QAbstractItemView>
@@ -34,16 +33,24 @@
 #include "qvv_main_win.h"
 #include "qvv_help.h"
 
-#include "ui_qvv_form_confirm_delete.h"
-
 /*****************************************************************************/
 
-QvvConfirmDeleteDialog::QvvConfirmDeleteDialog( QWidget *parent )
-     : QDialog( parent )
+QvvConfirmDeleteDialog::QvvConfirmDeleteDialog()
+     : QDialog()
 {
   cd.setupUi( this );
 
-  connect( cd.buttonBox->button( QDialogButtonBox::Yes ), SIGNAL(clicked()), this, SLOT(buttonYes()) );
+  activated_button = QDialogButtonBox::NoButton;
+  connect( cd.buttonBox->button( QDialogButtonBox::Yes      ), SIGNAL(clicked()), this, SLOT(buttonYes())      );
+  connect( cd.buttonBox->button( QDialogButtonBox::YesToAll ), SIGNAL(clicked()), this, SLOT(buttonYesToAll()) );
+  connect( cd.buttonBox->button( QDialogButtonBox::No       ), SIGNAL(clicked()), this, SLOT(buttonNo())       );
+  connect( cd.buttonBox->button( QDialogButtonBox::Cancel   ), SIGNAL(clicked()), this, SLOT(buttonCancel())   );
+}
+
+int QvvConfirmDeleteDialog::exec()
+{
+  activated_button = QDialogButtonBox::NoButton;
+  QDialog::exec();
 }
 
 /*****************************************************************************/
@@ -339,6 +346,7 @@ void QvvMainWindow::goToDir( int mode )
 
 void QvvMainWindow::enter( QTreeWidgetItem *item )
 {
+  if( ! item ) return;
   if( item->text( 0 ) == ITEM_TYPE_DIR )
     {
     loadDir( item->text( 1 ) );
@@ -452,6 +460,12 @@ void QvvMainWindow::goPrevNext( int r )
   int start;
 
   int x = tree->topLevelItemCount();
+
+  if( x == 0 )
+    {
+    closeAllViews();
+    return;
+    }
 
   i = tree->indexOfTopLevelItem( lwi );
   start = i;
@@ -627,23 +641,50 @@ void QvvMainWindow::slotAbout()
 
 void QvvMainWindow::slotDeleteSelected()
 {
-  QList<QTreeWidgetItem *> selected = tree->selectedItems();
-  int sel_count = selected.count();
+  deleteItems( 0 );
+}
 
+void QvvMainWindow::slotDeleteCurrent()
+{
+  deleteItems( 1 );
+}
+
+int QvvMainWindow::deleteItems( int current_only )
+{
+  QDir trashdir;
+
+  QString trash_can = trashdir.homePath();
+  trash_can += "/.qvv4_trash_can";
+
+  if( ! trashdir.exists( trash_can ) )
+    trashdir.mkdir( trash_can );
+  if( ! trashdir.exists( trash_can ) )
+    {
+    statusBar()->showMessage( tr( "Error: Cannot find/create trash can path:" ) + " " + trash_can );
+    return -1;
+    }
+
+  QList<QTreeWidgetItem *> selected;
+  if( current_only )
+    selected.append( tree->currentItem() );
+  else
+    selected = tree->selectedItems();
+  int sel_count = selected.count();
 
   if( sel_count < 1 )
     {
     statusBar()->showMessage( tr( "Error: No files selected for delete" ) );
-    return;
+    return -1;
     };
 
-
-
   QvvConfirmDeleteDialog *confirm = new QvvConfirmDeleteDialog;
-  Ui_ConfirmDelete cd;
-  cd.setupUi( confirm );
   confirm->move( x() + ( ( width() - confirm->width() ) / 2 ), y() + ( ( height() - confirm->height() ) / 2) );
   confirm->setWindowTitle( sel_count > 1 ? tr( "Delete multiple files: " ) + sel_count + tr( "?" ) : tr( "Delete one file?" ) );
+
+  int yes_to_all = 0;
+
+  int not_moved = 0;
+  int moved_ok_count = 0;
 
   QTreeWidgetItem *item;
   for( int i = 0; i < sel_count; i++ )
@@ -653,25 +694,65 @@ void QvvMainWindow::slotDeleteSelected()
 
     QString file_name = cdir.absolutePath() + "/" + item->text( 1 );
 
-    QImage im;
-    im.load( file_name );
-    im = im.scaled( QSize( 256, 256 ), Qt::KeepAspectRatio );
-    QPixmap pm( 256, 256 );
-    pm = pm.fromImage( im );
+    if( ! yes_to_all )
+      {
+      QImage im;
+      im.load( file_name );
+      im = im.scaled( QSize( 256, 256 ), Qt::KeepAspectRatio );
+      QPixmap pm( 256, 256 );
+      pm = pm.fromImage( im );
 
-    cd.file_name->setText( item->text( 1 ) );
-    cd.pixmap->setPixmap( pm );
-    int res = confirm->exec();
-    if( ! res ) break;
+      confirm->cd.file_name->setText( item->text( 1 ) );
+      confirm->cd.pixmap->setPixmap( pm );
+      //confirm->cd.buttonBox->button( QDialogButtonBox::YesToAll )->setEnabled( sel_count > 1 );
+      confirm->exec();
 
-    cd.buttonBox->button( QDialogButtonBox::YesToAll )->setEnabled( sel_count > 1 );
-    res = cd.buttonBox->button( QDialogButtonBox::YesToAll )->isDown();
+      //qDebug() << "RESBUTTON: " << QVariant( confirm->activated_button ).toString();
 
-    statusBar()->showMessage( res ? "ALL" : "nope" );
+      if( confirm->activated_button == QDialogButtonBox::NoButton ) break;
+      if( confirm->activated_button == QDialogButtonBox::Cancel   ) break;
+      if( confirm->activated_button == QDialogButtonBox::No       ) continue;
+      if( confirm->activated_button == QDialogButtonBox::YesToAll )
+        yes_to_all = 1;
+      }
 
+    //qDebug() << "DELETE YES: " << file_name << " RESBUTTON: " << QVariant( confirm->activated_button ).toString();
+
+    QString path_hash = QVariant( QCryptographicHash::hash( cdir.absolutePath().toAscii(), QCryptographicHash::Sha1 ).toHex() ).toString();
+    QString trash_file_name = trash_can + "/" + path_hash + "." + item->text( 1 );
+
+    int moved_ok = 0;
+    if( trashdir.exists( trash_file_name ) )
+      QFile::remove( trash_file_name );
+    if( trashdir.rename( file_name, trash_file_name ) )
+      {
+      moved_ok = 1;
+      }
+    else
+      if( QFile::copy( file_name, trash_file_name ) )
+        {
+        QFile::remove( file_name );
+        moved_ok = 1;
+        }
+      else
+        {
+        not_moved++;
+        }
+
+    if( moved_ok )
+      {
+      tree->takeTopLevelItem( tree->indexOfTopLevelItem( item ) );
+      moved_ok_count++;
+      }
+
+    //qDebug() << "DELETE FILE: " << file_name;
+    //qDebug() << "TRASH  FILE: " << trash_file_name;
+    //qDebug() << "--------------------------------------------------";
     }
 
   delete confirm;
+
+  return moved_ok_count;
 };
 
 

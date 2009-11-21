@@ -16,11 +16,18 @@
 #include <QMenu>
 #include <QToolBar>
 #include <QString>
+#include <QDialog>
+#include <QPushButton>
+
+#include "ui_qvv_form_confirm_delete.h"
 
 class QvvView;
 
 class QvvConfirmDeleteDialog : public QDialog
 {
+
+     Q_OBJECT
+
   public:
      Ui_ConfirmDelete cd;
 
@@ -30,12 +37,14 @@ class QvvConfirmDeleteDialog : public QDialog
 
   public slots:
 
-     buttonYes()      { activated_button = QDialogButtonBox::Yes      };
-     buttonYesToAll() { activated_button = QDialogButtonBox::YesToAll };
-     buttonNo()       { activated_button = QDialogButtonBox::No       };
-     buttonCancel()   { activated_button = QDialogButtonBox::Cancel   };
+     int exec();
 
-}
+     void buttonYes()      { activated_button = QDialogButtonBox::Yes;      };
+     void buttonYesToAll() { activated_button = QDialogButtonBox::YesToAll; };
+     void buttonNo()       { activated_button = QDialogButtonBox::No;       };
+     void buttonCancel()   { activated_button = QDialogButtonBox::Cancel;   };
+
+};
 
 class QvvTreeWidget : public QTreeWidget
 {
@@ -91,6 +100,8 @@ class QvvMainWindow : public QMainWindow
 
      void sortColumn( int n );
 
+     int deleteItems( int current_only );
+
  protected:
      void showEvent(QShowEvent *event);
      void keyPressEvent(QKeyEvent *event);
@@ -132,6 +143,7 @@ class QvvMainWindow : public QMainWindow
      void slotAbout();
 
      void slotDeleteSelected();
+     void slotDeleteCurrent();
 
  private:
      void setupMenuBar();

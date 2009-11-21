@@ -62,6 +62,13 @@ void QvvView::slotCenter()
   move( x, y );
 };
 
+void QvvView::slotDelete()
+{
+  if (! getMainWindow(file_name) ) return;
+  if( mw->deleteItems( 1 ) > 0 )
+    mw->slotGoNext();
+}
+
 void QvvView::load( QString fname )
 {
   file_name = fname;
@@ -299,6 +306,8 @@ void QvvView::keyPressEvent( QKeyEvent * e )
                                     mw->slotRandomItem();
                                     }
                                   break;
+
+      case Qt::Key_Delete       : slotDelete(); break;
 
       default:
             if( e->text() == "" )

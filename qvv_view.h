@@ -83,6 +83,8 @@ class QvvView : public QWidget
     void slotViewNoCenter() { opt_center = 0; reView( -1 ); }
     void slotViewHome() { opt_center = 0; move( 0, 0 ); reView( -1 ); }
 
+    void slotDelete();
+
   protected:
     void keyPressEvent ( QKeyEvent * e );
 
