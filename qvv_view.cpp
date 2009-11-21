@@ -111,6 +111,14 @@ void QvvView::reView( int a_scale )
   *pm = QPixmap::fromImage( im );
   loaded = pm->isNull() ? 0 : 1;
 
+  if( ! loaded )
+    {
+    im.load( ":/images/image-broken.png" );
+    pm = new QPixmap( im.width(), im.height() );
+    *pm = QPixmap::fromImage( im );
+    loaded = pm->isNull() ? 0 : 1;
+    }
+
   int w = pm->width();
   int h = pm->height();
 
