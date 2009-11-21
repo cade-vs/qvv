@@ -50,7 +50,7 @@ QvvConfirmDeleteDialog::QvvConfirmDeleteDialog()
 int QvvConfirmDeleteDialog::exec()
 {
   activated_button = QDialogButtonBox::NoButton;
-  QDialog::exec();
+  return QDialog::exec();
 }
 
 /*****************************************************************************/
