@@ -9,6 +9,15 @@
     x feature removed
     % note
 
+  4.02 21.Nov.2009
+
+    + 1. Trash can implemented. DELETE key now can move images
+         to HOME/.qvv4_trash_can directory.
+
+    + 2. Add tiff to images filter list.
+
+    ! 3. Fixed closing view problem when image is broken or empty.
+
   4.01 03.Nov.2009
 
     + 1. Added context menu in image view windows.
