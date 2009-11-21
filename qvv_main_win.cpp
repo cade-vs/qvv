@@ -20,6 +20,9 @@
 #include <QDateTime>
 #include <QProgressDialog>
 #include <QImage>
+#include <QDialog>
+#include <QPixmap>
+#include <QPushButton>
 
 #include <QTreeWidgetItem>
 #include <QAbstractItemView>
@@ -30,6 +33,18 @@
 #include "qvv_view.h"
 #include "qvv_main_win.h"
 #include "qvv_help.h"
+
+#include "ui_qvv_form_confirm_delete.h"
+
+/*****************************************************************************/
+
+QvvConfirmDeleteDialog::QvvConfirmDeleteDialog( QWidget *parent )
+     : QDialog( parent )
+{
+  cd.setupUi( this );
+
+  connect( cd.buttonBox->button( QDialogButtonBox::Yes ), SIGNAL(clicked()), this, SLOT(buttonYes()) );
+}
 
 /*****************************************************************************/
 
@@ -610,6 +625,56 @@ void QvvMainWindow::slotAbout()
   view->setWindowTitle( QString() + " QVV " + QVV_VERSION );
 };
 
+void QvvMainWindow::slotDeleteSelected()
+{
+  QList<QTreeWidgetItem *> selected = tree->selectedItems();
+  int sel_count = selected.count();
+
+
+  if( sel_count < 1 )
+    {
+    statusBar()->showMessage( tr( "Error: No files selected for delete" ) );
+    return;
+    };
+
+
+
+  QvvConfirmDeleteDialog *confirm = new QvvConfirmDeleteDialog;
+  Ui_ConfirmDelete cd;
+  cd.setupUi( confirm );
+  confirm->move( x() + ( ( width() - confirm->width() ) / 2 ), y() + ( ( height() - confirm->height() ) / 2) );
+  confirm->setWindowTitle( sel_count > 1 ? tr( "Delete multiple files: " ) + sel_count + tr( "?" ) : tr( "Delete one file?" ) );
+
+  QTreeWidgetItem *item;
+  for( int i = 0; i < sel_count; i++ )
+    {
+    item = selected[i];
+    if( item->text( 0 ) == ITEM_TYPE_DIR ) continue;
+
+    QString file_name = cdir.absolutePath() + "/" + item->text( 1 );
+
+    QImage im;
+    im.load( file_name );
+    im = im.scaled( QSize( 256, 256 ), Qt::KeepAspectRatio );
+    QPixmap pm( 256, 256 );
+    pm = pm.fromImage( im );
+
+    cd.file_name->setText( item->text( 1 ) );
+    cd.pixmap->setPixmap( pm );
+    int res = confirm->exec();
+    if( ! res ) break;
+
+    cd.buttonBox->button( QDialogButtonBox::YesToAll )->setEnabled( sel_count > 1 );
+    res = cd.buttonBox->button( QDialogButtonBox::YesToAll )->isDown();
+
+    statusBar()->showMessage( res ? "ALL" : "nope" );
+
+    }
+
+  delete confirm;
+};
+
+
 /*****************************************************************************/
 
 void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
@@ -728,6 +793,9 @@ void QvvMainWindow::setupMenuBar()
 
     action = menu->addAction( tr("&Reload directory"), this, SLOT(slotReloadDir()), Qt::Key_F5 );
     action->setIcon( QIcon( ":/images/view-refresh.png" ) );
+
+    action = menu->addAction( tr("&Delete selected images"), this, SLOT(slotDeleteSelected()), Qt::Key_Delete );
+    //action->setIcon( QIcon( ":/images/view-refresh.png" ) );
 
     action = menu->addAction( tr("&Quit"), this, SLOT(close()), Qt::AltModifier + Qt::Key_X );
     action->setIcon( QIcon( ":/images/system-log-out.png" ) );

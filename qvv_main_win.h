@@ -19,6 +19,24 @@
 
 class QvvView;
 
+class QvvConfirmDeleteDialog : public QDialog
+{
+  public:
+     Ui_ConfirmDelete cd;
+
+     QDialogButtonBox::StandardButton activated_button;
+
+     QvvConfirmDeleteDialog();
+
+  public slots:
+
+     buttonYes()      { activated_button = QDialogButtonBox::Yes      };
+     buttonYesToAll() { activated_button = QDialogButtonBox::YesToAll };
+     buttonNo()       { activated_button = QDialogButtonBox::No       };
+     buttonCancel()   { activated_button = QDialogButtonBox::Cancel   };
+
+}
+
 class QvvTreeWidget : public QTreeWidget
 {
 
@@ -112,6 +130,8 @@ class QvvMainWindow : public QMainWindow
 
      void slotHelp();
      void slotAbout();
+
+     void slotDeleteSelected();
 
  private:
      void setupMenuBar();
