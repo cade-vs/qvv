@@ -271,18 +271,23 @@ void QvvMainWindow::loadThumbs()
       break;
     QApplication::processEvents();
 
+    if( i >= tree->topLevelItemCount() ) return;
+
     QTreeWidgetItem *item = tree->topLevelItem( i );
 
+    //qDebug() << tree->topLevelItemCount() << " | " << i << " | " << item;
+
     QString item_name = item->text( 1 );
+    QString item_name_src = item_name;
 
     if( item->text( 0 ) == ITEM_TYPE_DIR )
       {
       if( ! opt_show_dir_thumbs ) continue;
 
-      new_path = cdir.absolutePath() + "/" + item_name;
+      //new_path = cdir.absolutePath() + "/" + item_name;
 
       QDir tdir;
-      tdir.cd( new_path );
+      tdir.cd( new_path + "/" + item_name );
 
       QStringList filters;
       filters.append( QString( "*" ) );
@@ -299,18 +304,11 @@ void QvvMainWindow::loadThumbs()
         QString ext = "." + fi.suffix() + ".";
         if( ! fi.isDir() && extensions_filter.indexOf( ext.toUpper() ) < 0 ) continue;
 
-        item_name = fi.fileName();
+        item_name_src = item_name + "/" + fi.fileName();
         break;
         }
 
-      //qDebug() << "Show dir thumbs: " << new_path << " | " << item_name;
-      }
-
-    QString icon_dir = new_path + "/.thumbnails";
-    if( opt_create_thumbs )
-      {
-      if( ! cdir.exists( icon_dir ) )
-        cdir.mkdir( icon_dir );
+      qDebug() << "Show dir thumbs: " << new_path << " | " << item_name;
       }
 
     QStringList icon_fns;
@@ -329,7 +327,14 @@ void QvvMainWindow::loadThumbs()
 
     if( found == -1 && opt_create_thumbs )
       {
-      QString file_name = new_path + "/" + item_name;
+      QString icon_dir = new_path + "/.thumbnails";
+      if( opt_create_thumbs )
+        {
+        if( ! cdir.exists( icon_dir ) )
+          cdir.mkdir( icon_dir );
+        }
+
+      QString file_name = new_path + "/" + item_name_src;
       QImage im;
       im.load( file_name );
       if( im.width() > opt_thumbs_size || im.height() > opt_thumbs_size )
