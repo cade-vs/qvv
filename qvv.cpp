@@ -26,6 +26,7 @@ int opt_thumbs_size;
 int opt_create_thumbs;
 int opt_create_smooth_thumbs;
 int opt_create_jpeg_thumbs;
+int opt_show_dir_thumbs;
 int opt_use_toolbar;
 
 int main(int argc, char **argv)
@@ -44,6 +45,7 @@ int main(int argc, char **argv)
   opt_create_thumbs        = Settings.value( "create_thumbs", 0 ).toInt();
   opt_create_jpeg_thumbs   = Settings.value( "create_jpeg_thumbs", 0 ).toInt();
   opt_create_smooth_thumbs = Settings.value( "create_smooth_thumbs", 1 ).toInt();
+  opt_show_dir_thumbs      = Settings.value( "opt_show_dir_thumbs", 0 ).toInt();
   opt_use_toolbar          = Settings.value( "use_toolbar", 1 ).toInt();
 
   extensions_filter        = Settings.value( "extensions_filter", QString( DEFAULT_EXTENSIONS_FILTER ) ).toString();

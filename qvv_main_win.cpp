@@ -272,7 +272,39 @@ void QvvMainWindow::loadThumbs()
     QApplication::processEvents();
 
     QTreeWidgetItem *item = tree->topLevelItem( i );
-    if( item->text( 0 ) == ITEM_TYPE_DIR ) continue;
+
+    QString item_name = item->text( 1 );
+
+    if( item->text( 0 ) == ITEM_TYPE_DIR )
+      {
+      if( ! opt_show_dir_thumbs ) continue;
+
+      new_path = cdir.absolutePath() + "/" + item_name;
+
+      QDir tdir;
+      tdir.cd( new_path );
+
+      QStringList filters;
+      filters.append( QString( "*" ) );
+
+      QFileInfoList info_list = tdir.entryInfoList( filters );
+
+      for( int i = 0; i < info_list.count(); i++ )
+        {
+        QFileInfo fi = info_list.at( i );
+
+        if( fi.fileName() == "."  ) continue;
+        if( fi.fileName() == ".." ) continue;
+
+        QString ext = "." + fi.suffix() + ".";
+        if( ! fi.isDir() && extensions_filter.indexOf( ext.toUpper() ) < 0 ) continue;
+
+        item_name = fi.fileName();
+        break;
+        }
+
+      //qDebug() << "Show dir thumbs: " << new_path << " | " << item_name;
+      }
 
     QString icon_dir = new_path + "/.thumbnails";
     if( opt_create_thumbs )
@@ -282,8 +314,8 @@ void QvvMainWindow::loadThumbs()
       }
 
     QStringList icon_fns;
-    icon_fns.append( new_path + "/.thumbnails/" + item->text( 1 ) + ".jpg" ); // JPEG thumb idex is 0!
-    icon_fns.append( new_path + "/.thumbnails/" + item->text( 1 ) + ".png" ); // PNG  thumb idex is 1!
+    icon_fns.append( new_path + "/.thumbnails/" + item_name + ".jpg" ); // JPEG thumb idex is 0!
+    icon_fns.append( new_path + "/.thumbnails/" + item_name + ".png" ); // PNG  thumb idex is 1!
 
     int found = -1;
     for( int z = 0; z < icon_fns.count(); z++ )
@@ -297,7 +329,7 @@ void QvvMainWindow::loadThumbs()
 
     if( found == -1 && opt_create_thumbs )
       {
-      QString file_name = new_path + "/" + item->text( 1 );
+      QString file_name = new_path + "/" + item_name;
       QImage im;
       im.load( file_name );
       if( im.width() > opt_thumbs_size || im.height() > opt_thumbs_size )
@@ -521,6 +553,14 @@ void QvvMainWindow::slotJPEGThumbs()
 
   statusBar()->showMessage( opt_create_jpeg_thumbs ? tr( "JPEG Thumbnails creation for JPEGs enabled" ) : tr( "PNG Thumbnails creation for all image types enabled" ) );
 };
+
+void QvvMainWindow::slotDirThumbs()
+{
+  opt_show_dir_thumbs = ! opt_show_dir_thumbs;
+  Settings.setValue( "opt_show_dir_thumbs", opt_show_dir_thumbs );
+
+  statusBar()->showMessage( opt_show_dir_thumbs ? tr( "Directory thumbnails enabled" ) : tr( "Directory thumbnails disabled" ) );
+}
 
 void QvvMainWindow::slotSmoothThumbs()
 {
@@ -957,6 +997,11 @@ void QvvMainWindow::setupMenuBar()
     action->setCheckable( true );
     action->setChecked( opt_create_jpeg_thumbs );
     connect( action, SIGNAL( toggled(bool) ), this, SLOT(slotJPEGThumbs()) );
+
+    action = menu->addAction( tr("Show directory thumbnails") );
+    action->setCheckable( true );
+    action->setChecked( opt_show_dir_thumbs );
+    connect( action, SIGNAL( toggled(bool) ), this, SLOT(slotDirThumbs()) );
 
     menu->addSeparator();
 

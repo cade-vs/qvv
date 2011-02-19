@@ -33,6 +33,7 @@ extern int opt_thumbs_size;
 extern int opt_create_thumbs;
 extern int opt_create_smooth_thumbs;
 extern int opt_create_jpeg_thumbs;
+extern int opt_show_dir_thumbs;
 extern int opt_use_toolbar;
 
 
