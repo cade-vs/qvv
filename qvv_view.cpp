@@ -334,6 +334,21 @@ void QvvView::keyPressEvent( QKeyEvent * e )
               case '4'  : reView( 400 ); break;
               case '5'  : reView( 500 ); break;
 
+              case '\'' :
+              case '}'  : if (getMainWindow(file_name))
+                             {
+                             mw->setActiveView( this );
+                             mw->slotGoNextDir();
+                             }
+                           break;
+              case ';'  :
+              case '{'  : if (getMainWindow(file_name))
+                             {
+                             mw->setActiveView( this );
+                             mw->slotGoPrevDir();
+                             }
+                           break;
+
               /*
               case '<'  :
               case ','  : rotation -= 90; reView( scale ); break;

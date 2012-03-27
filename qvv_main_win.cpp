@@ -308,7 +308,7 @@ void QvvMainWindow::loadThumbs()
         break;
         }
 
-      qDebug() << "Show dir thumbs: " << new_path << " | " << item_name;
+      //qDebug() << "Show dir thumbs: " << new_path << " | " << item_name;
       }
 
     QStringList icon_fns;
@@ -489,7 +489,17 @@ void QvvMainWindow::slotGoNext()
   goPrevNext( +1 );
 }
 
-void QvvMainWindow::goPrevNext( int r )
+void QvvMainWindow::slotGoPrevDir()
+{
+  goPrevNextDir( -1 );
+};
+
+void QvvMainWindow::slotGoNextDir()
+{
+  goPrevNextDir( +1 );
+}
+
+void QvvMainWindow::goPrevNext( int r, int skip_dirs )
 {
   QTreeWidgetItem *lwi = tree->currentItem();
 
@@ -520,7 +530,7 @@ void QvvMainWindow::goPrevNext( int r )
     if( i == start ) break;
     lwi = tree->topLevelItem( i );
     //qDebug() << "Searching: " << i << " " << lwi->text( 0 ) << " " << lwi->text( 1 );
-    if( lwi->text( 0 ) == ITEM_TYPE_DIR ) continue;
+    if( skip_dirs && lwi->text( 0 ) == ITEM_TYPE_DIR ) continue;
     break;
     }
   if( lwi )
@@ -532,6 +542,16 @@ void QvvMainWindow::goPrevNext( int r )
     //qDebug() << "CurrentItemFound: " << i << " " << lwi->text( 0 ) << " " << lwi->text( 1 );
     }
 };
+
+void QvvMainWindow::goPrevNextDir( int r )
+{
+  slotGoUp();
+  if( r > 0 )
+    goPrevNext( +1, 0 );
+  else
+    goPrevNext( -1, 0 );
+  enterCurrent();
+}
 
 /*****************************************************************************/
 
@@ -876,6 +896,13 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
               {
               case '[' : slotGoPrev(); break;
               case ']' : slotGoNext(); break;
+
+              case '\'':
+              case '{' : slotGoPrevDir(); break; // FIXME: not working?
+
+              case ';' :
+              case '}' : slotGoNextDir(); break; // FIXME: not working?
+
               case '~' : slotHomeDir();   break;
               case '`' : slotChangeDir();   break;
 

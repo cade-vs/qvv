@@ -93,7 +93,8 @@ class QvvMainWindow : public QMainWindow
 
      void loadThumbs();
 
-     void goPrevNext( int r );
+     void goPrevNext( int r, int skip_dirs = 1 );
+     void goPrevNextDir( int r );
 
      void setActiveView( QvvView *view );
      void closeView( QvvView *view );
@@ -134,6 +135,9 @@ class QvvMainWindow : public QMainWindow
 
      void slotGoNext();
      void slotGoPrev();
+
+     void slotGoNextDir();
+     void slotGoPrevDir();
 
      void slotSortColumn1();
      void slotSortColumn3();
