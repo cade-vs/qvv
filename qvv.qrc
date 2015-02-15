@@ -1,0 +1,24 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+
+     <file>images/Green_woman_by_ValentinaKallias_edit2.png</file>
+     <file>images/qvv_icon_128x128.png</file>
+     <file>images/qvv_icon_128x128.jpg</file>
+     <file>images/qvv_icon_16x16.png</file>
+
+     <file>images/go-home.png</file>
+     <file>images/go-up.png</file>
+     <file>images/system-log-out.png</file>
+     <file>images/view-refresh.png</file>
+     <file>images/window-new.png</file>
+     <file>images/help-browser.png</file>
+     <file>images/folder.png</file>
+     <file>images/face-glasses.png</file>
+     <file>images/view_all.png</file>
+
+     <file>images/image-broken.png</file>
+
+     <file>qvv_help.html</file>
+
+</qresource>
+</RCC>

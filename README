@@ -1,0 +1,81 @@
+NAME
+
+  QVV -- Qt-based image viewer
+
+SYNOPSIS
+
+  qvv [image-files...]
+
+  QVV will open all images specified at the command line or will open
+  browser window otherwise.
+
+LICENSE
+
+  GPL, check COPYING file for license usege details.
+
+INSTALL
+
+  type 'qmake' and wait for Makefile to be generated. qmake is Qt
+  utility which creates Makefile accordingly to your Qt installation
+  paths and other parameters.
+
+  type 'make' and wait for the 'qvv' binary -- if you don't succeed
+  try use precompiled qvv pack.
+
+  QVV has no external run-time dependancies. You just need qvv binary.
+
+  then take qvv binary and put it somewhere in the $PATH, usually
+  /usr/local/bin/  or  /usr/bin/  are fine.
+
+  requirements for compile process:
+
+  Qt 4.x+ -- http://www.troll.no
+
+KEYBOARD REFERENCE
+
+  Press F1 inside QVV to get help about keyboard shortcuts or
+  check qvv_help.html file.
+
+FEEDBACK
+
+  You can contact me with any notes you have at:
+
+    mailto:cade@bis.bg
+    mailto:cade@biscom.net
+    mailto:cade@datamax.bg
+
+THANKS
+
+	Thanks to the KDE, GNOME, Tango projects for the icons.
+
+	Thanks to the old dos QPV and PVE viewers' authors for the ideas.
+
+	Thanks to the authors of the libraries I use: Qt, Jpeg, PNG, Zlib...
+
+	Thanks to Keith Schincke for the Qt2.x patch (QVV ver. before 0.12)!
+
+  Thanks to Carsten Schneider mailto:zcarsten@gmx.net for the Zaurus port:
+	  http://z-soft.z-portal.info/zimage/
+
+  Thanks to Anry for the first about/logo image (QVV 0.x)
+    http://anry.design.ru/
+
+  Thanks to Valentina Kallias for the new about/logo image (QVV 4.x+)
+         http://valentinakallias.deviantart.com/
+
+	Thanks to all QVV users! :)
+
+AUTHOR
+
+	(c) Vladi Shabanski <cade@bis.bg> 1999-2009
+	http://cade.datamax.bg/qvv
+
+CREDITS
+
+  About/logo image "Green woman" (c) Valentina Kallias mailto:vali@kallias.com
+  http://valentinakallias.deviantart.com/
+  (used with permission)
+
+  Icons by Tango Project
+  http://tango.freedesktop.org
+

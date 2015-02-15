@@ -1,0 +1,27 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+
+Signatures are made with this key:
+
+Type bits /keyID    Date       User ID
+pub  1024D/6F35B214 2002/10/23 Vladi Belperchinov-Shabanski <cade@cpan.org>
+     Key fingerprint = EAB5 92CC D845 804B F59E  5288 9019 B8B4 6F35 B214
+
+Which can be obtained from pgp.mit.edu:
+
+http://pgp.mit.edu:11371/pks/lookup?op=get&search=0x6F35B214
+
+or with gpg:
+
+gpg --keyserver pgp.mit.edu --recv-key 6F35B214
+
+
+This text is also signed with the same key.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQFCPV+XkBm4tG81shQRAktFAJ9fxiGVPVDyWI9rFOwQ/Eby/Pco6QCghAYR
+SScGMAUyGHTVQpRerFNnNz4=
+=kEx+
+-----END PGP SIGNATURE-----

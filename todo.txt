@@ -1,0 +1,9 @@
+
+- ESC/ENTER in browser to close opened window
+
+- +/- scaling broken
+
+- CENTER/HOME positioning broken on next/prev image
+
+- ABOUT and copyright talks
+

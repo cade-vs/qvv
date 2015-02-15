@@ -1,0 +1,118 @@
+
+  History changes/ChangeLog for QVV
+
+  Legend:
+
+    ! bug fix
+    + feature added
+    - feature changed
+    x feature removed
+    % note
+
+  4.02 21.Nov.2009
+
+    + 1. Trash can implemented. DELETE key now can move images
+         to HOME/.qvv4_trash_can directory.
+
+    + 2. Add tiff to images filter list.
+
+    ! 3. Fixed closing view problem when image is broken or empty.
+
+  4.01 03.Nov.2009
+
+    + 1. Added context menu in image view windows.
+
+    + 2. Move image window with left mouse button + drag
+
+    ! 3. Fixed progress dialog responsiveness when loading thumbnails.
+
+    ! 4. Center progress dialog inside browser window.
+
+    ! 5. Help updated with missing key descriptions.
+
+    ! 6. Now multiple images can be displayed. Select multiple images and
+         press Ctrl+RightArrow or use menu entry or toolabr button.
+
+  4.00 01.Nov.2009
+
+    % 1. QVV is now completely rewritten from the scratch!
+
+    % 2. QVV now requires QT 4.x
+
+    % 3. QVV now has new about/logo image:
+
+         "Green woman" (c) Valentina Kallias mailto:vali@kallias.com
+         http://valentinakallias.deviantart.com/
+
+         Thank you Val!
+
+    % 4. Some features were dropped temporary and some new were added.
+         Check further changes in this file for news.
+
+  0.19 14.Aug.2004
+
+    - 1. Dropped pseudo-aqua style, now QVV respects default Qt settings (qtrc)
+
+  0.18 28.Sep.2003
+
+    + 1. Now QVV can edit file descriptions (notes).
+         F7 opens edit box. F2 saves the description and
+         closes the note. ESC or F4 cancels note.
+         Notes are saved in files with same name with additional
+         extension `.note' in the same directory.
+
+  0.17 30.Nov.2002
+
+    + 1. Rotation +/-90 degrees with keys `<' and '>'.
+
+  0.16 09.Mar.2002
+
+    + 1. New Aqua-like widget style.
+    + 2. Drag-n-Drop copy/move of files.
+    + 3. QVV now requires Qt 3.x
+
+  0.15 25.Dec.2001
+
+    % 0. Merry Xmas! :)
+    + 1. QVV has new Logo! Thanx Anry! (see human_dreams_low.txt)
+    ! 2. Few small bugs has been fixed.
+    - 3. xvpic.pl renamed to xvpic.
+
+  0.14 11.Aug.2001
+
+    + 1. QVV now can show xvpics thumbnails
+    + 2. F6 in browser window will switch on/off thumbnails
+    + 3. 'z' in image window will set desktop background image
+    + 4. 'Z' is just like 'z' but will scale to desktop size first
+    + 5. added xvpic.pl utility for creating xvpics thumbnails
+
+  0.13 18.Mar.2001
+
+    + 1. QVV saves current position on directory listing reload
+
+  0.12 08.Nov.2000
+
+    + 1. Qt 2.x support, QVV does not support Qt 1.x anymore!
+         NOTE: You still can use version 0.11 for Qt 1.x
+         (See THANKS file for initial patch credits)
+
+  0.11 Unknown (About Sep/Oct.2000)
+
+    ! 1. minor fixups (trash can support and navigation)
+
+  0.10 21.Jul.2000
+
+    + 1. image windows can be moved with ctrl+mouse drag
+    + 2. image can be moved to 0,0 with HOME key
+    + 3. image window can chagne to next/prev image with
+         left/right mouse clicks
+    + 4. image window can be closed with middle mouse click
+    + 5. backspace is alias for left-arrow key in browser
+    + 6. added trash can support
+    + 7. improved docs a bit
+
+  0.09 and below...
+
+    % 0. History lost
+
+
