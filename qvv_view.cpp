@@ -321,7 +321,7 @@ void QvvView::keyPressEvent( QKeyEvent * e )
             if( e->text() == "" )
               QWidget::keyPressEvent( e );
             else
-              switch( e->text().toAscii().at(0) )
+              switch( e->text().toLatin1().at(0) )
               {
               case '+'  : reView( scale + 10 ); break;
               case '-'  : reView( scale - 10 ); break;
@@ -372,10 +372,10 @@ void QvvView::keyPressEvent( QKeyEvent * e )
 */
 /*
       default:
-        if ( e->text().toAscii().at(0) && isalnum(e->text().toAscii().at(0)) )
-          find( e->text().toAscii().at(0) );
+        if ( e->text().toLatin1().at(0) && isalnum(e->text().toLatin1().at(0)) )
+          find( e->text().toLatin1().at(0) );
         else
-          switch( e->text().toAscii().at(0) )
+          switch( e->text().toLatin1().at(0) )
             {
             case 13  : Enter( tree->currentItem() ); break;
             case '~' : goToDir( '~' ); break;

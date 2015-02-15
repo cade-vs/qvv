@@ -96,7 +96,7 @@ void QvvTreeWidget::keyPressEvent ( QKeyEvent * e )
 {
 
   e->ignore();
-  int a = e->text() == "" ? 0 : e->text().toAscii().at(0);
+  int a = e->text() == "" ? 0 : e->text().toLatin1().at(0);
   int m = e->modifiers();
 
   if( ( m == Qt::ShiftModifier || m == Qt::NoModifier ) && a >= '!' && a <= 'z' )
@@ -718,7 +718,7 @@ int QvvMainWindow::deleteItems( int current_only )
 
     //qDebug() << "DELETE YES: " << file_name << " RESBUTTON: " << QVariant( confirm->activated_button ).toString();
 
-    QString path_hash = QVariant( QCryptographicHash::hash( cdir.absolutePath().toAscii(), QCryptographicHash::Sha1 ).toHex() ).toString();
+    QString path_hash = QVariant( QCryptographicHash::hash( cdir.absolutePath().toLatin1(), QCryptographicHash::Sha1 ).toHex() ).toString();
     QString trash_file_name = trash_can + "/" + path_hash + "." + item->text( 1 );
 
     int moved_ok = 0;
@@ -812,10 +812,10 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
 */
 /*
       default:
-        if ( e->text().toAscii().at(0) && isalnum(e->text().toAscii().at(0)) )
-          find( e->text().toAscii().at(0) );
+        if ( e->text().toLatin1().at(0) && isalnum(e->text().toLatin1().at(0)) )
+          find( e->text().toLatin1().at(0) );
         else
-          switch( e->text().toAscii().at(0) )
+          switch( e->text().toLatin1().at(0) )
             {
             case 13  : Enter( tree->currentItem() ); break;
             case '~' : goToDir( '~' ); break;
@@ -827,7 +827,7 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
             if( e->text() == "" )
               QWidget::keyPressEvent( e );
             else
-              switch( e->text().toAscii().at(0) )
+              switch( e->text().toLatin1().at(0) )
               {
               case '[' : slotGoPrev(); break;
               case ']' : slotGoNext(); break;
