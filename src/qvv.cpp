@@ -79,13 +79,6 @@ int main(int argc, char **argv)
     //main_win->move( view->width() + 10, view->height() - main_win->height() );
     main_win->move( 100, 100 );
     main_win->show();
-
-    /*
-    QvvView *view = new QvvView( main_win );
-    main_win->views.append( view );
-    //view->load( ":/images/Half_Face_by_uzorpatorica.jpg" );
-    view->load( ":/images/Look_To_The_Sun_by_K3win_sm.png" );
-    */
     }
 
   return app.exec();
