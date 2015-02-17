@@ -47,7 +47,7 @@
 
 # AUTHOR
 
-  (c) Vladi Shabanski <cade@bis.bg> 1999-2015
-      http://cade.datamax.bg/qvv
+    (c) Vladi Shabanski <cade@bis.bg> 1999-2015
+        http://cade.datamax.bg/qvv
 
 
