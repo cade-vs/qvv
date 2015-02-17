@@ -15,7 +15,7 @@
 #include <QTextBrowser>
 #include <QSettings>
 
-#define QVV_VERSION   "4.02"
+#define QVV_VERSION   "4.04"
 
 #define DEFAULT_EXTENSIONS_FILTER   ".JPG.JPEG.PNG.GIF.BMP.XPM.TIF.TIFF."
 
@@ -33,10 +33,7 @@ extern int opt_thumbs_size;
 extern int opt_create_thumbs;
 extern int opt_create_smooth_thumbs;
 extern int opt_create_jpeg_thumbs;
-<<<<<<< HEAD
 extern int opt_show_dir_thumbs;
-=======
->>>>>>> ab5ae472a09c5d175cc66e19a1a9002dae10b390
 extern int opt_use_toolbar;
 
 
