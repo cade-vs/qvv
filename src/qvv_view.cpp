@@ -357,6 +357,16 @@ void QvvView::keyPressEvent( QKeyEvent * e )
               */
 
               case 'z'  : reView( -2 ); break;
+              case 'Z'  : reView( -2 );
+                          if( loaded )
+                            {
+                            //set desktop
+                            //QPainter painter( Desktop );
+                            //painter.drawPixmap( 0, 0, *pm );
+                            //Desktop->render(pm);
+                            };
+                          break;  
+
               case 'x'  : reView( -3 ); break;
               // case 'z'  : setDesktopBackground(); break;
 
