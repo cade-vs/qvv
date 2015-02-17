@@ -7,4 +7,4 @@ Type=Application
 X-KDE-StartupNotify=true
 Icon=qvv
 Categories=Qt;Graphics;Viewer;
-MimeType=image/gif;image/jpeg;image/png;
+MimeType=image/gif;image/jpeg;image/png;image/bmp;
