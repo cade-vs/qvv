@@ -783,7 +783,7 @@ int QvvMainWindow::deleteItems( int current_only )
 
     //qDebug() << "DELETE YES: " << file_name << " RESBUTTON: " << QVariant( confirm->activated_button ).toString();
 
-    QString path_hash = QVariant( QCryptographicHash::hash( cdir.absolutePath().toAscii(), QCryptographicHash::Sha1 ).toHex() ).toString();
+    QString path_hash = QVariant( QCryptographicHash::hash( cdir.absolutePath().toLatin1(), QCryptographicHash::Sha1 ).toHex() ).toString();
     QString trash_file_name = trash_can + "/" + path_hash + "." + item->text( 1 );
 
     int moved_ok = 0;
