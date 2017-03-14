@@ -2,6 +2,8 @@
 
   QVV -- Qt-based compact image viewer
 
+![QVV Screenshot](screenshots/qvv4-2.png)
+
 # SYNOPSIS
 
   qvv [image-files...]
