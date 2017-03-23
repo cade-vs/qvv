@@ -42,6 +42,64 @@ KEYBOARD REFERENCE
   Press F1 inside QVV to get help about keyboard shortcuts or
   check qvv_help.html file.
 
+  Images List Browser Window Keys
+
+      [
+          show previous image
+      ]
+          show next image
+      *
+          show random image
+      ~
+          got to user home directory
+      DELETE
+          moves all selected/current image to the trash ($HOME/.qvv4_trash_can)
+
+  Image View Window Keys
+
+      [ or PageUp
+          show previous image
+      ] or PageDown
+          show next image
+      Mouse Wheel Up/Down
+          show previous/next image
+      *
+          show random image
+      ARROW KEYS
+          move image window
+      F3
+          show image list browser (if hidden)
+      F4
+          close image
+      ESC
+          close image
+      ENTER
+          close image
+      0
+          fit image to display if larger (scale down)
+      1
+          show image at 100% (1:1)
+      2
+          show image at 200%
+      3
+          show image at 300%
+      4
+          show image at 400%
+      5
+          show image at 500%
+      +
+          increase scale by 10%
+      -
+          decrease scale by 10%
+      z
+          scale image to screen size, keep aspect ratio
+      x
+          scale image to screen size
+      INSERT
+          center image
+      DELETE
+          moves this image to the trash can ($HOME/.qvv4_trash_can)
+
 FEEDBACK
 
   You can contact me with any notes you have at:
