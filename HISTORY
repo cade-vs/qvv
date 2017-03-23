@@ -9,15 +9,19 @@
     x feature removed
     % note
 
+  4.05 23.Mar.2017
+
+    + 1. Added SVG image files filter.
+
   4.04 17.Feb.2015
-  
+
     + 1. Added option to show thumbnails for directories.
-    
+
     + 2. Added navigation between directories at the same level.
          (keys "{" and "}" or ";" and "'" )
 
     + 3. Merged changes by Götz Christ to support Qt5.
-    
+
     % 4. Yes, 4.03 was never documented nor released :)
 
   4.02 21.Nov.2009

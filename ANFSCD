@@ -5,22 +5,23 @@
   development and desktop environment. So I switched my machine to Linux.
 
   In early 1999 there were not many graphical applications and very few
-  image viewers with strange behaviour :) I remember xv.
+  image viewers with strange behaviour :) xv rulz at the time... :)
 
   I felt like it was good time to learn a bit of Qt and fill my desktop
-  "gap" for an image viewer app. It took me a bit under 2 hours to build
-  working viewer. I consider this good achievement since I never used Qt
-  at all. Those 2 hours were used and for reading docs :)
+  "gap" for an image viewer app. It took me a bit under 2 hours (incl. RTFM)
+  to build working viewer. I've never used Qt so it was a good achievement.
 
-  Now it is late 2009. I tried for couple of days to port QVV to Qt 4.x
+  In late 2009 I tried for couple of days to port QVV to Qt 4.x
   without luck (Qt changed massively) so I decided to rewrite it from
   the scratch. And I'm quite happy with this decision :) QVV 4 looks great
   and will continue to update it as time allows.
 
-  Qt is the greatest! :)
+  Now it is early 2017 and QVV is the second most used application for me
+  (after VFU file manager) so is the Qt and it is a fantastick track :))
 
-  Thanks for the attention!
+  Qt is the greatest!
 
-  Vladi.
+  Thanks,
+    Vladi.
 
 

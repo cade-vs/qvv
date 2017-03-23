@@ -6,30 +6,36 @@ SYNOPSIS
 
   qvv [image-files...]
 
-  QVV will open all images specified at the command line or will open
-  browser window otherwise.
-
-LICENSE
-
-  GPLv2, check COPYING file for license usege details.
+  QVV will open all images specified at the command line.
+  If started without arguments, will open file browser window.
 
 INSTALL
 
-  type 'qmake' and wait for Makefile to be generated. qmake is Qt
-  utility which creates Makefile accordingly to your Qt installation
-  paths and other parameters.
+  QVV support QT 4.x and QT 5.x.
+
+  to generate compile Makefile you have to choose appropriate qmake file:
+
+  qvv.qt4.pro   -- for QT 4.x
+  qvv.qt5.pro   -- for QT 5.x
+
+  qmake is Qt utility which creates Makefile accordingly to your Qt
+  installation paths and other parameters.
+
+  type "qmake qvv.qt4.pro" or "qmake qvv.qt5.pro" and wait for Makefile to
+  be generated.
 
   type 'make' and wait for the 'qvv' binary -- if you don't succeed
-  try use precompiled qvv pack.
+  try use precompiled qvv pack or contact the author.
 
-  QVV has no external run-time dependancies. You just need qvv binary.
+  QVV has no external run-time dependancies.
 
-  then take qvv binary and put it somewhere in the $PATH, usually
+  then take qvv binary and put it somewhere in the $PATH, for example
   /usr/local/bin/  or  /usr/bin/  are fine.
 
   requirements for compile process:
 
-  Qt 4+ -- http://qt.io
+  Qt 4.x -- http://qt.io
+  Qt 5.x -- http://qt.io
 
 KEYBOARD REFERENCE
 
@@ -42,12 +48,22 @@ FEEDBACK
 
     mailto:cade@bis.bg
     mailto:cade@biscom.net
-    mailto:cade@datamax.bg
+    mailto:cade@noxrun.com
 
+
+LICENSE
+
+  GPLv2, check COPYING file for license usege details.
+
+WEBSITE AND GITHUB
+
+  http://cade.datamax.bg/qvv
+
+  https://github.com/cade-vs/qvv
 
 AUTHOR
 
   (c) Vladi Shabanski <cade@bis.bg> 1999-2015
       http://cade.datamax.bg/qvv
 
-
+EOF
