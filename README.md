@@ -13,7 +13,7 @@
 
 # INSTALL
 
-  QVV support QT 4.x and QT 5.x.
+  QVV supports QT 4.x and QT 5.x.
 
   to generate compile Makefile you have to choose appropriate qmake file:
 
