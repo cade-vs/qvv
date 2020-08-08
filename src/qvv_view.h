@@ -1,8 +1,8 @@
 /****************************************************************************
 **
 **  QVV Image Viewer
-**  1999-2009 (c) Vladi Belperchinov-Shabanski
-**  <cade@bis.bg> <cade@biscom.net> <cade@epay.bg> <cade@datamax.bg>
+**  Copyright (c) 1999-2020 Vladi Belperchinov-Shabanski
+**  <cade@bis.bg> <shabanski@gmail.com> <cade@cpan.org>
 **  http://cade.datamax.bg/qvv/
 **
 ****************************************************************************/

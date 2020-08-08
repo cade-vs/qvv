@@ -1,8 +1,8 @@
 /****************************************************************************
 **
 **  QVV Image Viewer
-**  1999-2009 (c) Vladi Belperchinov-Shabanski
-**  <cade@bis.bg> <cade@biscom.net> <cade@epay.bg> <cade@datamax.bg>
+**  Copyright (c) 1999-2020 Vladi Belperchinov-Shabanski
+**  <cade@bis.bg> <shabanski@gmail.com> <cade@cpan.org>
 **  http://cade.datamax.bg/qvv/
 **
 ****************************************************************************/
@@ -661,6 +661,21 @@ void QvvMainWindow::sortColumn( int n )
   tree->sortByColumn( last_sort_col, last_sort_ord );
 };
 
+void QvvMainWindow::toggleSortColumns()
+{
+  if( last_sort_col == 3 )
+    {
+    sortColumn( 1 );
+    statusBar()->showMessage( QString( tr( "Sort entries by NAME" ) ) );
+    }
+  else
+    {
+    sortColumn( 3 );  
+    statusBar()->showMessage( QString( tr( "Sort entries by MODIFY TIME" ) ) );
+    }
+    
+}
+
 void QvvMainWindow::slotSortColumn1()
 {
   sortColumn( 1 );
@@ -859,6 +874,8 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
       case Qt::Key_BracketLeft  : slotGoPrev(); break;
       case Qt::Key_Space        :
       case Qt::Key_BracketRight : slotGoNext(); break;
+      
+//      case Qt::Key_Slash        : toggleSortColumns(); break;
 
 /*
       case Qt::Key_F1    : closeAll();
@@ -904,9 +921,14 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
               case '}' : slotGoNextDir(); break; // FIXME: not working?
 
               case '~' : slotHomeDir();   break;
-              case '`' : slotChangeDir();   break;
+              case '`' : slotChangeDir(); break;
+              
+//              case '/' : toggleSortColumns(); break;
 
-              default: e->ignore(); QMainWindow::keyPressEvent( e ); break;
+              default: 
+                  e->ignore(); 
+                  QMainWindow::keyPressEvent( e ); 
+                  break;
               }
       }
     }
@@ -975,6 +997,7 @@ void QvvMainWindow::setupMenuBar()
 
     action = menu->addAction( tr("Sort by &Name"),        this, SLOT(slotSortColumn1()), Qt::AltModifier + Qt::Key_N );
     action = menu->addAction( tr("Sort by &Modify Time"), this, SLOT(slotSortColumn3()), Qt::AltModifier + Qt::Key_M );
+    action = menu->addAction( tr("T&oggle between sort by Name or Modify Time"), this, SLOT(toggleSortColumns()), Qt::Key_Slash );
 
     /*--------------------------------------------------------------------*/
 
