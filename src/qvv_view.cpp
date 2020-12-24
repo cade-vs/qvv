@@ -35,24 +35,35 @@ QvvView::QvvView( QvvMainWindow* a_mw )
 
   mouse_move = 0;
 
-  move( 0, 0 );
+  // setScreen( a_mw->screen() ); // TODO: for Qt 5.17+
+  move( mw->last_vx, mw->last_vy );
 }
 
 QvvView::~QvvView()
 {
+  mw->last_vx = x();
+  mw->last_vy = y();
   if( pm ) delete pm;
   close();
 }
 
 void QvvView::moverel( int dx, int dy )
 {
+  qDebug() << "     POS " << dx << "," << dy << " TO x:" << x() << " y:" << y();
   move( x() + dx, y() + dy );
+  qDebug() << "MOVE REL " << dx << "," << dy << " TO x:" << x() << " y:" << y();
+  
+/*
+  QRect g = geometry();
+  g.setX( g.x() + dx );
+  g.setY( g.y() + dy );
+  setGeometry( g );
+*/  
+  
 };
 
 void QvvView::slotCenter()
 {
-  if( ! opt_center ) return;
-
   int x, y;
 
   x = ( DeskW - width()  ) / 2;
@@ -127,7 +138,7 @@ void QvvView::reView( int a_scale )
   resize( w, h );
   setMinimumSize( w, h );
   setMaximumSize( w, h );
-  slotCenter();
+  if( opt_center ) slotCenter();
   if( ! isVisible() ) show();
   update();
 
@@ -256,6 +267,7 @@ void QvvView::paintEvent( QPaintEvent * pe )
 
 void QvvView::keyPressEvent( QKeyEvent * e )
 {
+  qDebug() << "     KEYPRESS POS x:" << x() << " y:" << y();
   if( e->modifiers() & Qt::ALT )
     {
     switch( e->key() )
@@ -269,12 +281,12 @@ void QvvView::keyPressEvent( QKeyEvent * e )
       {
       case Qt::Key_F1: slotHelp(); break;
 
-      case Qt::Key_Home  : move( 0, 0 ); break;
+      case Qt::Key_Home         : move( 0, 0 ); break;
 
-      case Qt::Key_Left         : moverel( -16, 0 ); break;
-      case Qt::Key_Right        : moverel( +16, 0 ); break;
-      case Qt::Key_Up           : moverel( 0, -16 ); break;
-      case Qt::Key_Down         : moverel( 0, +16 ); break;
+      case Qt::Key_Left         : moverel( -10, 0 ); break;
+      case Qt::Key_Right        : moverel( +10, 0 ); break;
+      case Qt::Key_Up           : moverel( 0, -10 ); break;
+      case Qt::Key_Down         : moverel( 0, +10 ); break;
 
       case Qt::Key_F3    : if (getMainWindow(file_name)) mw->show(); break;
       case Qt::Key_Escape:
@@ -372,79 +384,6 @@ void QvvView::keyPressEvent( QKeyEvent * e )
 
               default   : QWidget::keyPressEvent( e ); break;
               }
-/*
-      case Qt::Key_F3    : slotNewWindow(); break;
-      case Qt::Key_Left  : slotGoUp(); break;
-      case Qt::Key_Right :
-      case Qt::Key_Return: Enter( tree->currentItem() ); break;
-
-      //case Qt::Key_F6    : slotThumbs(); break;
-
-
-      case Qt::Key_F1    : closeAll();
-                           views.append( new qvvView( this ) );
-                           views.first()->load( "*logo*" );
-                           break;
-
-      case Qt::Key_F5    : loadDir( cdir.absolutePath() ); break;
-
-      case Qt::Key_BracketLeft  : slotGoPrev(); break;
-      case Qt::Key_BracketRight : slotGoNext(); break;
-      case Qt::Key_Backspace    :
-      case Qt::Key_Escape       : closeAll(); break;
-      case Qt::Key_Insert       : optCenter = !optCenter; break;
-      case Qt::Key_Delete       : slotDelete(); break;
-*/
-/*
-      default:
-        if ( e->text().toLatin1().at(0) && isalnum(e->text().toLatin1().at(0)) )
-          find( e->text().toLatin1().at(0) );
-        else
-          switch( e->text().toLatin1().at(0) )
-            {
-            case 13  : Enter( tree->currentItem() ); break;
-            case '~' : goToDir( '~' ); break;
-            case '`' : goToDir( '`' ); break;
-            default: QMainWindow::keyPressEvent( e );
-            }
-========================================================
-    switch( e->key() )
-      {
-      case ALT+Qt::Key_X        : app->quit(); break;
-      case Qt::Key_Home         : move(  0,  0 ); break;
-
-      case Qt::Key_Left         : moverel( -16*invertMove, 0 ); break;
-      case Qt::Key_Right        : moverel( +16*invertMove, 0 ); break;
-      case Qt::Key_Up           : moverel( 0, -16*invertMove ); break;
-      case Qt::Key_Down         : moverel( 0, +16*invertMove ); break;
-
-      case Qt::Key_Insert       : optCenter = !optCenter;
-      case Qt::Key_Tab          : CenterView( this ); moverel( 0, 0 ); break;
-
-      case Qt::Key_F1           : load( "*logo*" ); break;
-      case Qt::Key_F4           :
-      case Qt::Key_Escape       : if (mw) mw->views.removeOne( this );
-                              close(); delete this; break;
-
-      case Qt::Key_F5           : reView( scale ); break;
-
-      case Qt::Key_PageUp       :
-      case Qt::Key_BracketLeft  : if (mw) mw->slotGoPrev(); break;
-      case Qt::Key_Space        :
-      case Qt::Key_PageDown     :
-      case Qt::Key_BracketRight : if (mw) mw->slotGoNext(); break;
-      case Qt::Key_Delete       : if (mw)
-                                {
-                                mw->slotDelete();
-                                mw->Enter( mw->vb->currentItem() );
-                                }
-                                break;
-      break;
-      }
-======================================================
-
-      default: QWidget::keyPressEvent( e );
-*/
       }
     }
 };

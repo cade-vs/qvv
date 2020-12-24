@@ -82,6 +82,9 @@ class QvvMainWindow : public QMainWindow
 
      int             opt_thumbs;
      int             opt_dirs_only;
+     
+     int last_vx;
+     int last_vy;
 
      QvvMainWindow();
      ~QvvMainWindow();

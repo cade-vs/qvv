@@ -118,6 +118,9 @@ QvvMainWindow::QvvMainWindow()
 {
     toolbar = NULL;
 
+    last_vx = 0;
+    last_vy = 0;
+
     rand_seeded = 0;
 
     opt_thumbs        = 0;
