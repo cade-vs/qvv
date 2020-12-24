@@ -36,30 +36,26 @@ QvvView::QvvView( QvvMainWindow* a_mw )
   mouse_move = 0;
 
   // setScreen( a_mw->screen() ); // TODO: for Qt 5.17+
-  move( mw->last_vx, mw->last_vy );
+  if( mw )
+    move( mw->last_vx, mw->last_vy );
+  else  
+    move( 0, 0 );
 }
 
 QvvView::~QvvView()
 {
-  mw->last_vx = x();
-  mw->last_vy = y();
+  if( mw )
+    {
+    mw->last_vx = x();
+    mw->last_vy = y();
+    }
   if( pm ) delete pm;
   close();
 }
 
 void QvvView::moverel( int dx, int dy )
 {
-  qDebug() << "     POS " << dx << "," << dy << " TO x:" << x() << " y:" << y();
   move( x() + dx, y() + dy );
-  qDebug() << "MOVE REL " << dx << "," << dy << " TO x:" << x() << " y:" << y();
-  
-/*
-  QRect g = geometry();
-  g.setX( g.x() + dx );
-  g.setY( g.y() + dy );
-  setGeometry( g );
-*/  
-  
 };
 
 void QvvView::slotCenter()
