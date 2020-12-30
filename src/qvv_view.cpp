@@ -35,7 +35,7 @@ QvvView::QvvView( QvvMainWindow* a_mw )
 
   mouse_move = 0;
 
-  // setScreen( a_mw->screen() ); // TODO: for Qt 5.17+
+  windowHandle()->setScreen( a_mw->windowHandle()->screen() );
   if( mw )
     move( mw->last_vx, mw->last_vy );
   else  
@@ -263,7 +263,6 @@ void QvvView::paintEvent( QPaintEvent * pe )
 
 void QvvView::keyPressEvent( QKeyEvent * e )
 {
-  qDebug() << "     KEYPRESS POS x:" << x() << " y:" << y();
   if( e->modifiers() & Qt::ALT )
     {
     switch( e->key() )
