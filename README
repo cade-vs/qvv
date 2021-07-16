@@ -37,6 +37,10 @@ INSTALL
   Qt 4.x -- http://qt.io
   Qt 5.x -- http://qt.io
 
+  under debian you need to run:
+
+    apt-get install g++ qt-sdk
+
 KEYBOARD REFERENCE
 
   Press F1 inside QVV to get help about keyboard shortcuts or
