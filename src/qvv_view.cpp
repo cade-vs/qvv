@@ -12,6 +12,7 @@
 #include <QPainter>
 #include <QKeyEvent>
 #include <QAction>
+#include <QWindow>
 
 #include <qdebug.h>
 
@@ -35,7 +36,6 @@ QvvView::QvvView( QvvMainWindow* a_mw )
 
   mouse_move = 0;
 
-  windowHandle()->setScreen( a_mw->windowHandle()->screen() );
   if( mw )
     move( mw->last_vx, mw->last_vy );
   else  
@@ -135,7 +135,11 @@ void QvvView::reView( int a_scale )
   setMinimumSize( w, h );
   setMaximumSize( w, h );
   if( opt_center ) slotCenter();
-  if( ! isVisible() ) show();
+  if( ! isVisible() ) 
+    {
+    show();
+    //windowHandle()->setScreen( mw->windowHandle()->screen() );
+    }
   update();
 
   //qDebug() << "REVIEW: [" + file_name + "] loaded:"+QVariant( loaded ).toString() << " visible:" << isVisible() << pm->width() << pm->height();
