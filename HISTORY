@@ -9,6 +9,11 @@
     x feature removed
     % note
 
+  4.06 xx.xxx.2024
+  
+    + 1. Fixed positioning for multi-screen setup. Avoid 0x0 when 0x0 screen
+         is away from 0x0 virtual desktop.
+
   4.05 23.Mar.2017
 
     + 1. Added SVG image files filter.
