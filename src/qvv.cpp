@@ -77,7 +77,7 @@ int main(int argc, char **argv)
     QvvMainWindow *main_win = new QvvMainWindow();
     main_win->loadDir( QString( "." ) );
     //main_win->move( view->width() + 10, view->height() - main_win->height() );
-    main_win->move( 100, 100 );
+    //main_win->move( 100, 100 );
     main_win->show();
     }
 

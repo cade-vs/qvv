@@ -36,10 +36,10 @@ QvvView::QvvView( QvvMainWindow* a_mw )
 
   mouse_move = 0;
 
-  if( mw )
+  if( mw && mw->last_vx > -1 )
     move( mw->last_vx, mw->last_vy );
-  else  
-    move( 0, 0 );
+//  else  
+//    move( 0, 0 );
 }
 
 QvvView::~QvvView()
