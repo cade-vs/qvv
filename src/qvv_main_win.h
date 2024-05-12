@@ -50,14 +50,16 @@ class QvvTreeWidget : public QTreeWidget
 {
 
      Q_OBJECT
-
+     
  public:
      QvvTreeWidget( QWidget *parent );
 
      void findNext( QString str, int full_match = 0 );
 
  protected:
-     void keyPressEvent(QKeyEvent *event);
+     void keyPressEvent( QKeyEvent *event );
+     void mousePressEvent( QMouseEvent *event );
+     void mouseMoveEvent( QMouseEvent *event );
 };
 
 class QvvMainWindow : public QMainWindow
@@ -68,6 +70,8 @@ class QvvMainWindow : public QMainWindow
      QToolBar *toolbar;
 
      int rand_seeded;
+
+     QPoint drag_start_pos;
 
  public:
 
@@ -107,8 +111,10 @@ class QvvMainWindow : public QMainWindow
      int deleteItems( int current_only );
 
  protected:
-     void showEvent(QShowEvent *event);
-     void keyPressEvent(QKeyEvent *event);
+     void showEvent( QShowEvent *event );
+     void keyPressEvent( QKeyEvent *event );
+     void mousePressEvent( QMouseEvent *event );
+     void mouseMoveEvent( QMouseEvent *event );
 
  public slots:
      void toggleSortColumns();

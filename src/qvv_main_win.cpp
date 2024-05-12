@@ -22,6 +22,11 @@
 #include <QImage>
 #include <QPixmap>
 #include <QCryptographicHash>
+#include <QDrag>
+#include <QMimeType>
+#include <QMimeData>
+#include <QList>
+#include <QUrl>
 
 #include <QTreeWidgetItem>
 #include <QAbstractItemView>
@@ -110,6 +115,17 @@ void QvvTreeWidget::keyPressEvent ( QKeyEvent * e )
 
 }
 
+void QvvTreeWidget::mousePressEvent( QMouseEvent *event )
+{
+    QTreeWidget::mousePressEvent( event );
+    event->ignore();
+}
+
+void QvvTreeWidget::mouseMoveEvent( QMouseEvent *event )
+{
+    QTreeWidget::mouseMoveEvent( event );
+    event->ignore();
+}
 
 /*****************************************************************************/
 
@@ -162,7 +178,7 @@ QvvMainWindow::QvvMainWindow()
     tree->setSortingEnabled( 1 );
     tree->sortByColumn( 1, Qt::AscendingOrder );
 
-    tree->setDragEnabled( 1 );
+    //tree->setDragEnabled( 1 );
 
     tree->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
@@ -443,7 +459,7 @@ void QvvMainWindow::setActiveView( QvvView *view )
   int z = views.indexOf( view );
   if( z > 0 )
     {
-    views.swap( 0, z );
+    views.swapItemsAt( 0, z );
     QFileInfo fi( views[0]->getFileName() );
     tree->findNext( fi.fileName(), 1 );
     }
@@ -935,6 +951,40 @@ void QvvMainWindow::keyPressEvent ( QKeyEvent * e )
               }
       }
     }
+}
+
+void QvvMainWindow::mousePressEvent( QMouseEvent *event )
+{
+    if ( event->button() == Qt::LeftButton )
+        drag_start_pos = event->pos();
+}
+
+void QvvMainWindow::mouseMoveEvent( QMouseEvent *event )
+{
+    if ( ! ( event->buttons() & Qt::LeftButton ) ) return;
+    if ( ( event->pos() - drag_start_pos ).manhattanLength() < QApplication::startDragDistance()) return;
+
+
+    QList<QUrl> urls;
+
+    for( int i = 0; i < tree->topLevelItemCount(); i++ )
+      {
+      QTreeWidgetItem *item = tree->topLevelItem( i );
+      if( ! item->isSelected() ) continue;
+      if( item->text( 0 ) == ITEM_TYPE_DIR ) continue;
+      QUrl url( "file://" + cdir.absolutePath() + "/" + item->text( 1 ) );
+      urls.append( url );
+      }
+      
+    if( urls.count() == 0 ) return;  
+
+    QDrag *drag = new QDrag( this );
+    QMimeData *mimeData = new QMimeData;
+
+    mimeData->setUrls( urls );
+    drag->setMimeData( mimeData );
+
+    Qt::DropAction dropAction = drag->exec( Qt::CopyAction );
 }
 
 /*****************************************************************************/
